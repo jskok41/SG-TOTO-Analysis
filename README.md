@@ -146,34 +146,34 @@ toto-number-analysis/
 ## 📈 3. Data Analysis
 - After loading and cleaning the dataset, we can finally start with analysing the data.
 - **3.1 Invividual Bar Chart**
-    - We first start by looking at the frequency at which each number appears for Num1 - Num7 by plotting them on a bar chart to see if there are any patterns.
-    - **3.1.1 Num1 Frequency**
-    
-    ![CSV download guide](images/Num1_Freq.png)
+    - We first start by plotting the frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
+        - **3.1.1 Num1 Frequency**
+        
+        ![CSV download guide](images/Num1_Freq.png)
 
-    - **3.1.2 Num2 Frequency**
+        - **3.1.2 Num2 Frequency**
 
-    ![CSV download guide](images/Num2_Freq.png)
+        ![CSV download guide](images/Num2_Freq.png)
 
-    - **3.1.3 Num3 Frequency**
+        - **3.1.3 Num3 Frequency**
 
-    ![CSV download guide](images/Num3_Freq.png)
+        ![CSV download guide](images/Num3_Freq.png)
 
-    - **3.1.4 Num4 Frequency**
+        - **3.1.4 Num4 Frequency**
 
-    ![CSV download guide](images/Num4_Freq.png)
+        ![CSV download guide](images/Num4_Freq.png)
 
-    - **3.1.5 Num5 Frequency**
+        - **3.1.5 Num5 Frequency**
 
-    ![CSV download guide](images/Num5_Freq.png)
+        ![CSV download guide](images/Num5_Freq.png)
 
-    - **3.1.6 Num6 Frequency**
+        - **3.1.6 Num6 Frequency**
 
-    ![CSV download guide](images/Num6_Freq.png)
+        ![CSV download guide](images/Num6_Freq.png)
 
-    - **3.1.7 Num7 Frequency**
-    
-    ![CSV download guide](images/Num7_Freq.png)
+        - **3.1.7 Num7 Frequency**
+        
+        ![CSV download guide](images/Num7_Freq.png)
 
 
 
