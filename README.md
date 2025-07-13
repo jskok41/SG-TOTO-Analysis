@@ -144,7 +144,7 @@ toto-number-analysis/
 ---
 
 ## 📈 3. Data Analysis
-- **3.1 Invividual Bar Chart**
+- **3.1 Invividual Frequency Bar Chart**
     - We first start by plotting the frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         - **3.1.1 Num1 Frequency**
         
@@ -174,14 +174,54 @@ toto-number-analysis/
         
         ![Num7 Frequency](images/Num7_Freq.png)
 
-    - From these bar graphs, we can see that in general, apart from some noise from having a low sample size, Num1 and Num2 are right skewed, Num3 and Num4 are normally distributed, and Num5 and Num6 are left skewed. This makes sense as the numbers are sorted in ascending order, and so earlier numbers tend to be smaller, and later numbers tend to be bigger.
-    
-- **3.2 Grouped Bar Chart**
-    - We then plot the frequencies of Num1 - Num6 on a bar chart to see if there are any patterns.
-        - **3.2 Num1 Frequency**
-        
-        ![CSV download guide](images/Grouped_Freq.png)
+    - From these bar graphs, we can see that in general, apart from some noise from having a low sample size, Num1 and Num2 are right skewed, Num3 and Num4 are normally distributed, and Num5 and Num6 are left skewed. This makes sense as the numbers are sorted in ascending order, and so earlier numbers tend to be smaller, and later numbers tend to be bigger. This is more of an artifact from sorting the numbers and not a bias in how the numbers are drawn. This, however, gives us an idea of how results are structured, which is still valuable information. 
 
+- **3.2 Grouped Frequency Bar Chart**
+    - We then plot the frequencies of Num1 - Num6 on a bar chart to see if there are any patterns.
+        
+    ![Grouped Frequency](images/Grouped_Freq.png)
+    
+    - Again, this is more useful for showing how the draw results are structured.
+
+- **3.3 Overall Frequency Bar Chart**
+    - Next, we plot the overall frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
+        
+    ![Overall Frequency](images/Grouped_Freq.png)
+    
+    - Again, this is more useful for showing how the draw results are structured.
+
+- **3.4 Confidence Interval**
+    - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
+
+        - **3.4.1 Num1 Confidence Interval**
+            
+        ![Num1 Confidence Interval](images/Num1_CI.png)
+
+        - **3.4.2 Num2 Confidence Interval**
+
+        ![Num2 Confidence Interval](images/Num2_CI.png)
+
+        - **3.4.3 Num3 Confidence Interval**
+
+        ![Num3 Confidence Interval](images/Num3_CI.png)
+
+        - **3.4.4 Num4 Confidence Interval**
+
+        ![Num4 Confidence Interval](images/Num4_CI.png)
+
+        - **3.4.5 Num5 Confidence Interval**
+
+        ![Num5 Confidence Interval](images/Num5_CI.png)
+
+        - **3.4.6 Num6 Confidence Interval**
+
+        ![Num6 Confidence Interval](images/Num6_CI.png)
+
+        - **3.4.7 Num7 Confidence Interval**
+        
+        ![Num7 Confidence Interval](images/Num7_CI.png)
+
+    
 
 
 
