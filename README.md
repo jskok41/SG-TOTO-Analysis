@@ -102,13 +102,20 @@ toto-number-analysis/
     ```
 
 ---
+## ℹ️ 0. Information
+- **Winning numbers** will be represented by:
+    - Num1 - Num6 (Sorted in ascending order)
+- **Additional number** will be represented by:
+    - Num7
+
+---
 
 ## 🧾 1. Getting Dataset
 - For this project, I will be using data from a csv file downloaded from [this](https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view)
  website, which contains past TOTO draw data starting from 2008.
  - To get the latest dataset, click on the CSV icon above the table on the left side and complete the capcha to download the file.
  
- ![CSV download guide](images/downloading_dataset.png)
+ ![CSV download guide](images/Picture1.png)
  - Ensure that the downloaded csv file is placed in the **"toto-number-analysis"** folder that you have cloned, and rename it to **"toto_results.csv"**.
 
 ---
@@ -136,11 +143,24 @@ toto-number-analysis/
 
 ---
 
-## 3. 
-
-
-
-
+## 📈 3. Data Analysis
+- After loading and cleaning the dataset, we can finally start with analysing the data.
+- **3.1 Invividual Bar Chart**
+    - We first start by looking at the frequency at which each number appears for Num1 - Num7 by plotting them on a bar chart to see if there are any patterns.
+    - **3.1.1 Num1 Frequency**
+![CSV download guide](images/Num1_Freq.png)
+    - **3.1.2 Num2 Frequency**
+![CSV download guide](images/Num2_Freq.png)
+    - **3.1.3 Num3 Frequency**
+![CSV download guide](images/Num3_Freq.png)
+    - **3.1.4 Num4 Frequency**
+![CSV download guide](images/Num4_Freq.png)
+    - **3.1.5 Num5 Frequency**
+![CSV download guide](images/Num5_Freq.png)
+    - **3.1.6 Num6 Frequency**
+![CSV download guide](images/Num6_Freq.png)
+    - **3.1.7 Num7 Frequency**
+![CSV download guide](images/Num7_Freq.png)
 
 
 
