@@ -186,7 +186,7 @@ toto-number-analysis/
 - **3.3 Overall Frequency Bar Chart**
     - Next, we plot the overall frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         
-    ![Overall Frequency](images/Grouped_Freq.png)
+    ![Overall Frequency](images/Overall_Freq.png)
     
     - Again, this is more useful for showing how the draw results are structured.
 
