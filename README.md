@@ -115,7 +115,7 @@ toto-number-analysis/
  website, which contains past TOTO draw data starting from 2008.
  - To get the latest dataset, click on the CSV icon above the table on the left side and complete the capcha to download the file.
 
- ![CSV download guide](images/Picture1.png)
+ ![CSV download guide](images/downloading_dataset.png)
  - Ensure that the downloaded csv file is placed in the **"toto-number-analysis"** folder that you have cloned, and rename it to **"toto_results.csv"**.
 
 ---
