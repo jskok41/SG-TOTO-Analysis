@@ -144,37 +144,43 @@ toto-number-analysis/
 ---
 
 ## 📈 3. Data Analysis
-- After loading and cleaning the dataset, we can finally start with analysing the data.
 - **3.1 Invividual Bar Chart**
     - We first start by plotting the frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         - **3.1.1 Num1 Frequency**
         
-        ![CSV download guide](images/Num1_Freq.png)
+        ![Num1 Frequency](images/Num1_Freq.png)
 
         - **3.1.2 Num2 Frequency**
 
-        ![CSV download guide](images/Num2_Freq.png)
+        ![Num2 Frequency](images/Num2_Freq.png)
 
         - **3.1.3 Num3 Frequency**
 
-        ![CSV download guide](images/Num3_Freq.png)
+        ![Num3 Frequency](images/Num3_Freq.png)
 
         - **3.1.4 Num4 Frequency**
 
-        ![CSV download guide](images/Num4_Freq.png)
+        ![Num4 Frequency](images/Num4_Freq.png)
 
         - **3.1.5 Num5 Frequency**
 
-        ![CSV download guide](images/Num5_Freq.png)
+        ![Num5 Frequency](images/Num5_Freq.png)
 
         - **3.1.6 Num6 Frequency**
 
-        ![CSV download guide](images/Num6_Freq.png)
+        ![Num6 Frequency](images/Num6_Freq.png)
 
         - **3.1.7 Num7 Frequency**
         
-        ![CSV download guide](images/Num7_Freq.png)
+        ![Num7 Frequency](images/Num7_Freq.png)
 
+    - From these bar graphs, we can see that in general, apart from some noise from having a low sample size, Num1 and Num2 are right skewed, Num3 and Num4 are normally distributed, and Num5 and Num6 are left skewed. This makes sense as the numbers are sorted in ascending order, and so earlier numbers tend to be smaller, and later numbers tend to be bigger.
+    
+- **3.2 Grouped Bar Chart**
+    - We then plot the frequencies of Num1 - Num6 on a bar chart to see if there are any patterns.
+        - **3.2 Num1 Frequency**
+        
+        ![CSV download guide](images/Grouped_Freq.png)
 
 
 
