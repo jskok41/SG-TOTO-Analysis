@@ -221,7 +221,7 @@ toto-number-analysis/
         
         ![Num7 Confidence Interval](images/Num7_CI.png)
 
-    - blabla confidence interval shows blabla
+    - addd desc ltr
 
 ---
 
@@ -266,13 +266,47 @@ toto-number-analysis/
         
     ![Grouped Frequency](images/S_Grouped_Freq.png)
     
-    - Again, this is more useful for showing how the draw results are structured.
+    - addd desc ltr
 
 - **4.3 Overall Frequency Bar Chart**
         
     ![Overall Frequency](images/S_Overall_Freq.png)
     
     - From the bar chart, we can see that the numbers generally appear the same number of times unlike the chart from actual data, that has lesser counts of 46-49. This shows that it is most likely a result of having too small of a sample size.
+
+- **4.4 Confidence Interval**
+    - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
+
+        - **4.4.1 Num1 Confidence Interval**
+            
+        ![Num1 Confidence Interval](images/S_Num1_CI.png)
+
+        - **4.4.2 Num2 Confidence Interval**
+
+        ![Num2 Confidence Interval](images/S_Num2_CI.png)
+
+        - **4.4.3 Num3 Confidence Interval**
+
+        ![Num3 Confidence Interval](images/S_Num3_CI.png)
+
+        - **4.4.4 Num4 Confidence Interval**
+
+        ![Num4 Confidence Interval](images/S_Num4_CI.png)
+
+        - **4.4.5 Num5 Confidence Interval**
+
+        ![Num5 Confidence Interval](images/S_Num5_CI.png)
+
+        - **4.4.6 Num6 Confidence Interval**
+
+        ![Num6 Confidence Interval](images/S_Num6_CI.png)
+
+        - **4.4.7 Num7 Confidence Interval**
+        
+        ![Num7 Confidence Interval](images/S_Num7_CI.png)
+
+    - addd desc ltr
+
 ---
 
 ## 📈 5. 
