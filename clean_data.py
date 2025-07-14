@@ -3,13 +3,8 @@ import pandas as pd
 
 
 
-# Defining constants
-TOTO_CSV_FILE = "toto_results.csv"
-
-
-
 # Load data from csv file and catch errors if there are any
-def load_data():
+def load_data(file):
 
     print("=" * 60)
     print("Loading data".center(60))
@@ -17,14 +12,19 @@ def load_data():
     # Use try except to handle errors
     try:
         # Open file containing past toto results
-        df = pd.read_csv(TOTO_CSV_FILE)
+        df = pd.read_csv(file)
 
-        # Rename columns
-        results_columns = ['Winning Number 1', '2', '3', '4', '5', '6', 'Additional Number']
+        # Rename columns if using past data
         column_names = ['Num1', 'Num2', 'Num3', 'Num4', 'Num5', 'Num6', 'Num7']
-        results = df[results_columns]
-        results.columns = column_names
-        print("Data loaded sucessfully from: ", TOTO_CSV_FILE, "\n")
+
+        if (file == "toto_results.csv"):
+            results_columns = ['Winning Number 1', '2', '3', '4', '5', '6', 'Additional Number']
+            results = df[results_columns]
+            results.columns = column_names
+        else:
+            results = df[column_names]
+
+        print("Data loaded sucessfully from: ", file, "\n")
         return results, column_names
     
     # Handles FileNotFoundError when file is not found
@@ -49,6 +49,7 @@ def clean_data(results):
     print("=" * 60)
     print("Cleaning data".center(60))
     print("-" * 60, "\n")
+    print("Cleaning data...")
 
     # Ensure all values are numeric
     results_numeric = results.map(pd.to_numeric, errors="coerce")
@@ -114,8 +115,10 @@ def clean_data(results):
 
 def main():
 
+    file = "toto_results.csv"
+
     # Loads data from CSV file
-    results, column_names = load_data()
+    results, column_names = load_data(file)
 
     # Checks if any errors occured when loading data
     if results is None or column_names is None:

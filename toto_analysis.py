@@ -110,7 +110,7 @@ def overall_frequency_chart(results):
 
 
 
-
+# Plot 95% confidence interval 
 def confidence_interval_all_positions(results):
 
     # 95% confidence interval
