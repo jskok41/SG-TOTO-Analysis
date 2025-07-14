@@ -143,7 +143,7 @@ toto-number-analysis/
 
 ---
 
-## 📈 3. Data Analysis
+## 📈 3. Data Analysis (Actual Past Data)
 - **3.1 Invividual Frequency Bar Chart**
     - We first start by plotting the frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         - **3.1.1 Num1 Frequency**
@@ -188,7 +188,7 @@ toto-number-analysis/
         
     ![Overall Frequency](images/Overall_Freq.png)
     
-    - Again, this is more useful for showing how the draw results are structured.
+    - From the bar chart, we can see that the numbers generally appear the same number of times, except for 46-49, which could indicate a bias, or just not having enough cases, and is worth exploring more.
 
 - **3.4 Confidence Interval**
     - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
@@ -221,7 +221,44 @@ toto-number-analysis/
         
         ![Num7 Confidence Interval](images/Num7_CI.png)
 
+    - blabla confidence interval shows blabla
+
+---
+
+## 📈 4. Data Analysis (Monte Carlo Simulation)
+- **4.1 Simulated Invividual Frequency Bar Chart**
+    - As we only have access to a small sample size of data (1746 draws), fluctuations could be cause by pure randomness as some numbers may just appear more or less often by chance. To solve this, we will be using Monte Carlo Simulation to generate a large random sample that models the behaviour of TOTO draws. This will allow us to establish a baseline for expected frequencies, which we can then compare against our data. We have chosen to generate a dataset of size 100000 in order to smooth out randomness and reveal clearer frequency trends.
+    -  To do so, we first generate 6 random numbers from 1-49 and sort them in ascending order, then select an additional number from 1-49 that is not any of the other numbers.
     
+        - **4.1.1 Num1 Simulated Frequency**
+        
+        ![Num1 Frequency](images/S_Num1_Freq.png)
+
+        - **4.1.2 Num2 Simulated Frequency**
+
+        ![Num2 Frequency](images/S_Num2_Freq.png)
+
+        - **4.1.3 Num3 Simulated requency**
+
+        ![Num3 Frequency](images/S_Num3_Freq.png)
+
+        - **4.1.4 Num4 Simulated Frequency**
+
+        ![Num4 Frequency](images/S_Num4_Freq.png)
+
+        - **4.1.5 Num5 Simulated Frequency**
+
+        ![Num5 Frequency](images/S_Num5_Freq.png)
+
+        - **4.1.6 Num6 Simulated Frequency**
+
+        ![Num6 Frequency](images/S_Num6_Freq.png)
+
+        - **4.1.7 Num7 Simulated Frequency**
+        
+        ![Num7 Frequency](images/S_Num7_Freq.png)
+
+    - From 
 
 
 
