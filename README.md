@@ -229,7 +229,7 @@ toto-number-analysis/
 - **4.1 Simulated Invividual Frequency Bar Chart**
     - As we only have access to a small sample size of data (1746 draws), fluctuations could be cause by pure randomness as some numbers may just appear more or less often by chance. To solve this, we will be using Monte Carlo Simulation to generate a large random sample that models the behaviour of TOTO draws. This will allow us to establish a baseline for expected frequencies, which we can then compare against our data. We have chosen to generate a dataset of size 100000 in order to smooth out randomness and reveal clearer frequency trends.
     -  To do so, we first generate 6 random numbers from 1-49 and sort them in ascending order, then select an additional number from 1-49 that is not any of the other numbers.
-    
+
         - **4.1.1 Num1 Simulated Frequency**
         
         ![Num1 Frequency](images/S_Num1_Freq.png)
@@ -258,7 +258,25 @@ toto-number-analysis/
         
         ![Num7 Frequency](images/S_Num7_Freq.png)
 
-    - From 
+    - By using a larger sample size, we can see that the graphs smooths out alot more, and we are now able to see the graph go from right skewed to left skewed.
+    - We can also compare with our graph of actual draws and see that our real world data behaves like random draws, but are just affected by a few outliers caused by randomness due to having a small sample size. This shows that there is no bias towards or against certain numbers.
+    - This shows that there is no significant deviation from what would be expected from random and fair lottery conditions based on Monte Carlo simulation results.
+
+- **4.2 Grouped Frequency Bar Chart**
+        
+    ![Grouped Frequency](images/S_Grouped_Freq.png)
+    
+    - Again, this is more useful for showing how the draw results are structured.
+
+- **4.3 Overall Frequency Bar Chart**
+        
+    ![Overall Frequency](images/S_Overall_Freq.png)
+    
+    - From the bar chart, we can see that the numbers generally appear the same number of times unlike the chart from actual data, that has lesser counts of 46-49. This shows that it is most likely a result of having too small of a sample size.
+---
+
+## 📈 5. 
+- **5.1 Simulated**
 
 
 
