@@ -121,13 +121,13 @@ toto-number-analysis/
 ---
 
 ## 🧹 2. Loading / Cleaning Data
-- **2.1 Loading Data** - *load_data() functon*
+- **2.1 Loading Data** - *cleandata.load_data() functon*
     - To load data from the csv file, we will be using the ***"read_csv()"*** function within a ***"try except"*** block.
     - This allows us to catch potential errors such as:
         - ***FileNotFoundError*** - No file with that name is found
         - ***KeyError*** - Missing column
 
-- **2.2 Cleaning Data** - *clean_data() function*
+- **2.2 Cleaning Data** - *clean_data.clean_data() function*
     - "Garbage in garbage out". Since we are using data from a third party and we do not know whether the data is clean or not, we have to clean the data to prevent bugs and ensure accuracy. To do so, we first have to identify what are some parameters the data has to satisfy.
     - For this dataset, we need to check for:
         - ***Missing values*** 
@@ -144,7 +144,7 @@ toto-number-analysis/
 ---
 
 ## 📈 3. Data Analysis (Actual Past Data)
-- **3.1 Invividual Frequency Bar Chart**
+- **3.1 Invividual Frequency Bar Chart** - *toto_analysis.individual_bar_chart()*
     - We first start by plotting the frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         - **3.1.1 Num1 Frequency**
         
@@ -176,14 +176,14 @@ toto-number-analysis/
 
     - From these bar graphs, we can see that in general, apart from some noise from having a low sample size, Num1 and Num2 are right skewed, Num3 and Num4 are normally distributed, and Num5 and Num6 are left skewed. This makes sense as the numbers are sorted in ascending order, and so earlier numbers tend to be smaller, and later numbers tend to be bigger. This is more of an artifact from sorting the numbers and not a bias in how the numbers are drawn. This, however, gives us an idea of how results are structured, which is still valuable information. 
 
-- **3.2 Grouped Frequency Bar Chart**
+- **3.2 Grouped Frequency Bar Chart** - *toto_analysis.grouped_bar_chart()*
     - We then plot the frequencies of Num1 - Num6 on a bar chart to see if there are any patterns.
         
     ![Grouped Frequency](images/Grouped_Freq.png)
     
     - Again, this is more useful for showing how the draw results are structured.
 
-- **3.3 Overall Frequency Bar Chart**
+- **3.3 Overall Frequency Bar Chart** - *toto_analysis.overerall_frequency_chart()*
     - Next, we plot the overall frequencies of Num1 - Num7 on a bar chart to see if there are any patterns.
         
     ![Overall Frequency](images/Overall_Freq.png)
@@ -193,7 +193,7 @@ toto-number-analysis/
 - **3.4 Confidence Interval**
     - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
 
-        - **3.4.1 Num1 Confidence Interval**
+        - **3.4.1 Num1 Confidence Interval**  - *toto_analysis.confidence_interval()*
             
         ![Num1 Confidence Interval](images/Num1_CI.png)
 
@@ -226,7 +226,7 @@ toto-number-analysis/
 ---
 
 ## 📈 4. Data Analysis (Monte Carlo Simulation)
-- **4.1 Simulated Invividual Frequency Bar Chart**
+- **4.1 Simulated Invividual Frequency Bar Chart** - *toto_analysis.individual_bar_chart()*
     - As we only have access to a small sample size of data (1746 draws), fluctuations could be cause by pure randomness as some numbers may just appear more or less often by chance. To solve this, we will be using Monte Carlo Simulation to generate a large random sample that models the behaviour of TOTO draws. This will allow us to establish a baseline for expected frequencies, which we can then compare against our data. We have chosen to generate a dataset of size 100000 in order to smooth out randomness and reveal clearer frequency trends.
     -  To do so, we first generate 6 random numbers from 1-49 and sort them in ascending order, then select an additional number from 1-49 that is not any of the other numbers.
 
@@ -262,19 +262,19 @@ toto-number-analysis/
     - Comparing with our graph of actual draws, we can see that it follows the same general pattern, which means there is no bias towards or against certain numbers.
     - This shows that there is no significant deviation from what would be expected from random and fair lottery conditions based on Monte Carlo simulation results.
 
-- **4.2 Grouped Frequency Bar Chart**
+- **4.2 Grouped Frequency Bar Chart** - *toto_analysis.grouped_bar_chart()*
         
     ![Grouped Frequency](images/S_Grouped_Freq.png)
     
     - addd desc ltr
 
-- **4.3 Overall Frequency Bar Chart**
+- **4.3 Overall Frequency Bar Chart** - *toto_analysis.overerall_frequency_chart()*
         
     ![Overall Frequency](images/S_Overall_Freq.png)
     
     - From the bar chart, we can see that the numbers generally appear the same number of times unlike the chart from actual data, that has lesser counts of 46-49. This shows that it is most likely a result of having too small of a sample size.
 
-- **4.4 Confidence Interval**
+- **4.4 Confidence Interval**   - *toto_analysis.confidence_interval()*
     - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
 
         - **4.4.1 Num1 Confidence Interval**
