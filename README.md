@@ -258,8 +258,8 @@ toto-number-analysis/
         
         ![Num7 Frequency](images/S_Num7_Freq.png)
 
-    - By using a larger sample size, we can see that the graphs smooths out alot more, and we are now able to see the graph go from right skewed to left skewed.
-    - We can also compare with our graph of actual draws and see that our real world data behaves like random draws, but are just affected by a few outliers caused by randomness due to having a small sample size. This shows that there is no bias towards or against certain numbers.
+    - By using a larger sample size, we can see that the graphs smooths out alot more as the there is lesser noise from randomness due to having a small sample size.
+    - Comparing with our graph of actual draws, we can see that it follows the same general pattern, which means there is no bias towards or against certain numbers.
     - This shows that there is no significant deviation from what would be expected from random and fair lottery conditions based on Monte Carlo simulation results.
 
 - **4.2 Grouped Frequency Bar Chart**
