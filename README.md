@@ -190,10 +190,10 @@ toto-number-analysis/
     
     - From the bar chart, we can see that the numbers generally appear the same number of times, except for 46-49, which could indicate a bias, or just not having enough cases, and is worth exploring more.
 
-- **3.4 Confidence Interval**
+- **3.4 Confidence Interval** - *toto_analysis.confidence_interval()*
     - The next thing we can do is to calculate the confidence interval of the various numbers. We will be using 95% confidence interval in this case.
 
-        - **3.4.1 Num1 Confidence Interval**  - *toto_analysis.confidence_interval()*
+        - **3.4.1 Num1 Confidence Interval**
             
         ![Num1 Confidence Interval](images/Num1_CI.png)
 
