@@ -30,7 +30,7 @@ def load_data(file):
     # Handles FileNotFoundError when file is not found
     except FileNotFoundError:
         print("Error! CSV file not found!")
-        print("Download CSV file from 'https://en.lottolyzer.com/history/singapore/toto'")
+        print("Download CSV file from 'https://en.lottolyzer.com/history/singapore/toto' or generate Monte Carlo simulated data!")
         return None, None
     
     # Handles KeyError when there is a missing column
@@ -95,7 +95,7 @@ def clean_data(results):
 
     # Check if all results are clean
     if num_clean_results == total_results:
-        print("Dataset is clean! Ready for analysis!")
+        print("Dataset is clean! Ready for analysis!\n")
         return clean_results
     
     while True:

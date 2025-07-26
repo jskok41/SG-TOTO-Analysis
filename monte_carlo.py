@@ -10,15 +10,15 @@ def monte_carlo_simulation(num_draws=100000):
     draws = []
 
     for _ in range(num_draws):
-        # Step 1: pick 6 unique numbers from 1-49
+        # Pick 6 unique numbers from 1-49
         winning_nums = np.random.choice(range(1, 50), size=6, replace=False)
         winning_nums.sort()
 
-        # Step 2: pick 7th additional number, distinct from first 6
+        # Pick 7th additional number, different from first 6
         remaining_nums = set(range(1, 50)) - set(winning_nums)
         additional_num = np.random.choice(list(remaining_nums), size=1)[0]
 
-        # Step 3: Combine into a single draw record
+        # Combine into a single draw record
         draw = list(winning_nums) + [additional_num]
         draws.append(draw)
 

@@ -1,6 +1,8 @@
 import clean_data
 import toto_analysis
 import monte_carlo
+import backtest
+from random import randint
 
 
 
@@ -8,7 +10,7 @@ def main():
 
     while True:
 
-        print("-" * 60)
+        print("=" * 60)
         print("Main Menu".center(60))
         print("-" * 60, "\n")
 
@@ -17,7 +19,7 @@ def main():
         "2. Monte carlo simulated data\n" \
         "3. Generate new simulated data\n" \
         "0. Exit\n" \
-        "============================================================\n" \
+        "------------------------------------------------------------\n" \
         "Choice: ")
 
         match choice:
@@ -38,12 +40,6 @@ def main():
 
 
 
-
-
-
-
-
-
 def menu2(file):
 
     # Loads data from CSV file
@@ -52,24 +48,35 @@ def menu2(file):
     # Checks if any errors occured when loading data
     if results is None or column_names is None:
         return
-    
-    # Cleans results 
-    clean_results = clean_data.clean_data(results)
-
-    print("=" * 60)
-    print(file.center(60))
-    print("-" * 60, "\n")
-
 
     while True:
-        choice = input("Data Analysis\n" \
-        "1. Individual bar chart\n" \
-        "2. Grouped bar chart\n"
-        "3. Overall frequency \n" \
-        "4. Confidence interval chart \n" \
-        "0. End\n" \
-        "============================================================\n" \
-        "Choice: ")
+
+        if (file == "toto_results.csv"):
+            # Cleans results (from 3rd party so dk if its clean)
+            clean_results = clean_data.clean_data(results)
+
+            print("=" * 60)
+            print("Past Results(toto_results.csv)".center(60))
+            print("-" * 60)
+
+        else:
+            # No need to clean as we generated ourselves and know its clean
+            clean_results = results
+            print("=" * 60)
+            print("Monte Carlo Simulated Results(simulated_results.csv)".center(60))
+            print("-" * 60)
+
+        choice = input(
+            "Data Analysis\n" \
+            "1. Individual bar chart\n" \
+            "2. Grouped bar chart\n"
+            "3. Overall frequency \n" \
+            "4. Confidence interval chart \n" \
+            "5. Backtest \n" \
+            "6. Backtest with positional ranges \n" \
+            "0. Back \n" \
+            "------------------------------------------------------------\n" \
+            "Choice: ")
 
         match choice:
             case "0":
@@ -81,16 +88,20 @@ def menu2(file):
             case "3":
                 toto_analysis.overall_frequency_chart(clean_results)
             case "4":
-                toto_analysis.confidence_interval_all_positions(clean_results)
+                toto_analysis.confidence_interval(clean_results)
+            case "5":            
+                backtest.backtest(clean_results)
+            case "6":
+                position_ranges = [[1, 5],
+                                   [7, 16],
+                                   [16, 25],
+                                   [25, 34],
+                                   [35, 44],
+                                   [40, 49]]
 
+                backtest.backtest_with_position_ranges(clean_results, position_ranges)
             case _:
                 print("Invalid choice! Try again")
-
-
-            # case "5":
-            #     backtest_prediction(clean_results, strategy='most')
-            # case "6":
-            #     backtest_prediction(clean_results, strategy='least')
 
 
 

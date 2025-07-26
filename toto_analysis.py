@@ -111,7 +111,7 @@ def overall_frequency_chart(results):
 
 
 # Plot 95% confidence interval 
-def confidence_interval_all_positions(results):
+def confidence_interval(results):
 
     # 95% confidence interval
     z = norm.ppf(0.975)
@@ -162,4 +162,3 @@ def confidence_interval_all_positions(results):
             print(f"{number:6d} | {count:6d} | {p:10.4f} | {p_pct:5.1f}% | {ci_lower_pct:11.1f}% | {ci_upper_pct:11.1f}% | {ci_width:11.1f}%")
 
         print("-" * 84)
-
