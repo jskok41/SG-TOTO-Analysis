@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTO Number Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .analysis-option {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .analysis-option:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+        }
+        .loading {
+            display: none;
+        }
+        .plot-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .header-icon {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="main-container p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <div class="header-icon mb-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold text-dark mb-3">TOTO Number Analysis</h1>
+                        <p class="lead text-muted">Explore number frequency, patterns, and trends in Singapore TOTO lottery draws</p>
+                    </div>
+
+                    <!-- Data Source Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-database text-primary me-2"></i>
+                                        Data Source
+                                    </h5>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="dataSource" id="realData" value="toto_results.csv" checked>
+                                        <label class="btn btn-outline-primary" for="realData">Real Data</label>
+                                        
+                                        <input type="radio" class="btn-check" name="dataSource" id="simulatedData" value="simulated_draws.csv">
+                                        <label class="btn btn-outline-primary" for="simulatedData">Simulated Data</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-cogs text-primary me-2"></i>
+                                        Generate Simulation
+                                    </h5>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" id="numDraws" value="100000" min="1000" max="1000000">
+                                        <button class="btn btn-primary" onclick="generateSimulation()">
+                                            <i class="fas fa-play me-2"></i>Generate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Options -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                                        Analysis Options
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('individual_bar')">
+                                                <h6><i class="fas fa-chart-bar text-primary me-2"></i>Individual Bar Chart</h6>
+                                                <small class="text-muted">Frequency of each number</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('grouped_bar')">
+                                                <h6><i class="fas fa-chart-bar text-primary me-2"></i>Grouped Bar Chart</h6>
+                                                <small class="text-muted">Numbers grouped by position</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('overall_frequency')">
+                                                <h6><i class="fas fa-chart-pie text-primary me-2"></i>Overall Frequency</h6>
+                                                <small class="text-muted">Total frequency distribution</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('confidence_interval')">
+                                                <h6><i class="fas fa-chart-line text-primary me-2"></i>Confidence Interval</h6>
+                                                <small class="text-muted">Statistical confidence ranges</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('backtest')">
+                                                <h6><i class="fas fa-undo text-primary me-2"></i>Backtest</h6>
+                                                <small class="text-muted">Strategy performance testing</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="analysis-option p-3 border rounded" onclick="runAnalysis('backtest_positional')">
+                                                <h6><i class="fas fa-layer-group text-primary me-2"></i>Positional Backtest</h6>
+                                                <small class="text-muted">Position-based strategy testing</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading and Results -->
+                    <div class="loading text-center py-5" id="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3">Analyzing data...</p>
+                    </div>
+
+                    <div class="plot-container" id="results" style="display: none;">
+                        <div class="text-center mb-3">
+                            <h5 id="analysisTitle">Analysis Results</h5>
+                        </div>
+                        <div class="text-center">
+                            <img id="plotImage" class="img-fluid" style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function getSelectedDataSource() {
+            return document.querySelector('input[name="dataSource"]:checked').value;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showResults(plotData, title) {
+            document.getElementById('plotImage').src = 'data:image/png;base64,' + plotData;
+            document.getElementById('analysisTitle').textContent = title;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        async function runAnalysis(analysisType) {
+            showLoading();
+            
+            const dataSource = getSelectedDataSource();
+            const analysisTitles = {
+                'individual_bar': 'Individual Number Frequency',
+                'grouped_bar': 'Grouped Number Frequency by Position',
+                'overall_frequency': 'Overall Number Frequency Distribution',
+                'confidence_interval': 'Confidence Interval Analysis',
+                'backtest': 'Backtest Results',
+                'backtest_positional': 'Positional Backtest Results'
+            };
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: analysisType,
+                        data_source: dataSource
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResults(data.plot, analysisTitles[analysisType]);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function generateSimulation() {
+            const numDraws = document.getElementById('numDraws').value;
+            
+            try {
+                const response = await fetch('/api/generate_simulation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        num_draws: parseInt(numDraws)
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Success: ' + data.message);
+                    // Switch to simulated data
+                    document.getElementById('simulatedData').checked = true;
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,9 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def backtest(results):
-
-    predicted_numbers = getNum()
+def backtest(results, return_fig=False):
+    # For web app, use a default set of numbers
+    predicted_numbers = [1, 7, 13, 19, 25, 31]  # Default numbers for web interface
+    
     print("Start backtest")
     print(f"Testing for: {predicted_numbers}")
     
@@ -45,10 +46,33 @@ def backtest(results):
     print("5 correct: ", c_5)
     print("6 correct: ", c_6)
 
+    if return_fig:
+        # Create visualization
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+        
+        # Plot 1: Match distribution
+        match_counts = [c_3, c_4, c_5, c_6]
+        labels = ['3 matches', '4 matches', '5 matches', '6 matches']
+        colors = ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99']
+        
+        ax1.pie(match_counts, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+        ax1.set_title('Distribution of Matches')
+        
+        # Plot 2: Match frequency histogram
+        ax2.hist(matches, bins=range(0, 8), align='left', rwidth=0.8, color='steelblue', alpha=0.7)
+        ax2.set_xlabel('Number of Matches')
+        ax2.set_ylabel('Frequency')
+        ax2.set_title('Match Frequency Distribution')
+        ax2.grid(axis='y', linestyle='--', alpha=0.7)
+        ax2.set_xticks(range(0, 7))
+        
+        plt.tight_layout()
+        return fig
+
     
 
 
-def backtest_with_position_ranges(results, position_ranges):
+def backtest_with_position_ranges(results, position_ranges, return_fig=False):
 
     # Keep only Num1–Num6
     expected_cols = ['Num1', 'Num2', 'Num3', 'Num4', 'Num5', 'Num6']
@@ -124,27 +148,52 @@ def backtest_with_position_ranges(results, position_ranges):
     print("5 opp: ", opp_5)
     print("6 opp: ", opp_6)
 
-    # Plot
-    plt.hist(correct_positions, bins=range(0, 8), align='left',
-             rwidth=0.8, color='cornflowerblue')
-    plt.xticks(range(0, 7))
-    plt.xlabel('Correct Positions per Draw')
-    plt.ylabel('Frequency')
-    plt.title('Backtest: Position-Based Number Ranges')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.show()
+    if return_fig:
+        # Create visualization
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+        
+        # Plot 1: Correct positions histogram
+        ax1.hist(correct_positions, bins=range(0, 8), align='left',
+                 rwidth=0.8, color='cornflowerblue', alpha=0.7)
+        ax1.set_xticks(range(0, 7))
+        ax1.set_xlabel('Correct Positions per Draw')
+        ax1.set_ylabel('Frequency')
+        ax1.set_title('Correct Positions Distribution')
+        ax1.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        # Plot 2: Opposite positions histogram
+        ax2.hist(opp_positions, bins=range(0, 8), align='left',
+                 rwidth=0.8, color='red', alpha=0.7)
+        ax2.set_xticks(range(0, 7))
+        ax2.set_xlabel('Opposite Positions per Draw')
+        ax2.set_ylabel('Frequency')
+        ax2.set_title('Opposite Positions Distribution')
+        ax2.grid(axis='y', linestyle='--', alpha=0.7)
+        
+        plt.tight_layout()
+        return fig
+    else:
+        # Plot
+        plt.hist(correct_positions, bins=range(0, 8), align='left',
+                 rwidth=0.8, color='cornflowerblue')
+        plt.xticks(range(0, 7))
+        plt.xlabel('Correct Positions per Draw')
+        plt.ylabel('Frequency')
+        plt.title('Backtest: Position-Based Number Ranges')
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        plt.show()
 
-    # Plot
-    plt.hist(opp_positions, bins=range(0, 8), align='left',
-             rwidth=0.8, color='red')
-    plt.xticks(range(0, 7))
-    plt.xlabel('Opp Positions per Draw')
-    plt.ylabel('Frequency')
-    plt.title('Backtest: Position-Based Number Ranges')
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-    plt.tight_layout()
-    plt.show()
+        # Plot
+        plt.hist(opp_positions, bins=range(0, 8), align='left',
+                 rwidth=0.8, color='red')
+        plt.xticks(range(0, 7))
+        plt.xlabel('Opp Positions per Draw')
+        plt.ylabel('Frequency')
+        plt.title('Backtest: Position-Based Number Ranges')
+        plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        plt.show()
 
     return {
         "position_ranges": position_ranges,
