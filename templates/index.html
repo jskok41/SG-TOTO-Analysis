@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTO Number Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+        }
+        .btn-info {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+        }
+        .alert {
+            border-radius: 15px;
+            border: none;
+        }
+        .plot-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .plot-container img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .stats-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner-border {
+            color: #667eea;
+        }
+        .data-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+        }
+        .backtest-output {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="main-container">
+                    <!-- Header -->
+                    <div class="header">
+                        <h1><i class="fas fa-chart-line"></i> TOTO Number Analysis</h1>
+                        <p class="lead">Advanced statistical analysis for Singapore TOTO lottery patterns</p>
+                    </div>
+
+                    <!-- Data Management Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-database"></i> Data Management
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Generate New Data</h5>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control" id="numDraws" value="1000" min="100" max="100000">
+                                        <button class="btn btn-primary" onclick="generateData()">
+                                            <i class="fas fa-magic"></i> Generate Data
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Load Existing Data</h5>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="filename" value="simulated_draws.csv">
+                                        <button class="btn btn-info" onclick="loadData()">
+                                            <i class="fas fa-folder-open"></i> Load Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dataStatus" class="alert alert-info" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar"></i> Analysis Tools
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-success w-100" onclick="analyzeFrequency()">
+                                        <i class="fas fa-chart-pie"></i> Frequency Analysis
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-success w-100" onclick="analyzePositions()">
+                                        <i class="fas fa-sort-numeric-up"></i> Position Analysis
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-success w-100" onclick="analyzeGrouped()">
+                                        <i class="fas fa-layer-group"></i> Grouped Analysis
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-success w-100" onclick="analyzeConfidence()">
+                                        <i class="fas fa-chart-line"></i> Confidence Intervals
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-success w-100" onclick="runBacktest()">
+                                        <i class="fas fa-robot"></i> Backtest Strategy
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button class="btn btn-info w-100" onclick="showSampleData()">
+                                        <i class="fas fa-table"></i> View Sample Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="resultsSection" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area"></i> Analysis Results
+                            </div>
+                            <div class="card-body">
+                                <div id="loading" class="loading">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Processing analysis...</p>
+                                </div>
+                                <div id="plotContainer" class="plot-container"></div>
+                                <div id="statsContainer" class="stats-container"></div>
+                                <div id="backtestContainer" class="backtest-output" style="display: none;"></div>
+                                <div id="dataTableContainer" class="data-table" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-download"></i> Export Data
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary" onclick="downloadData()">
+                                <i class="fas fa-file-csv"></i> Download Analysis Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentData = null;
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('plotContainer').innerHTML = '';
+            document.getElementById('statsContainer').innerHTML = '';
+            document.getElementById('backtestContainer').style.display = 'none';
+            document.getElementById('dataTableContainer').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.getElementById('dataStatus');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = message;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Data management functions
+        async function generateData() {
+            const numDraws = document.getElementById('numDraws').value;
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('/generate_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `num_draws=${numDraws}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`✅ ${result.message}`, 'success');
+                    currentData = result;
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function loadData() {
+            const filename = document.getElementById('filename').value;
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('/load_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `filename=${filename}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(`✅ ${result.message}`, 'success');
+                    currentData = result;
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        // Analysis functions
+        async function analyzeFrequency() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/analyze_frequency');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('plotContainer').innerHTML = 
+                        `<img src="data:image/png;base64,${result.plot}" alt="Frequency Analysis">`;
+                    
+                    const stats = result.stats;
+                    document.getElementById('statsContainer').innerHTML = `
+                        <h5>Frequency Statistics</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Total Numbers:</strong> ${stats.total_numbers}</p>
+                                <p><strong>Unique Numbers:</strong> ${stats.unique_numbers}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Most Frequent:</strong></p>
+                                <ul>
+                                    ${Object.entries(stats.most_frequent).map(([num, freq]) => 
+                                        `<li>Number ${num}: ${freq} times</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function analyzePositions() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/analyze_positions');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('plotContainer').innerHTML = 
+                        `<img src="data:image/png;base64,${result.plot}" alt="Position Analysis">`;
+                    
+                    const stats = result.stats;
+                    let statsHtml = '<h5>Position Statistics</h5><div class="row">';
+                    
+                    Object.entries(stats).forEach(([position, data]) => {
+                        statsHtml += `
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>${position}</h6>
+                                        <p><strong>Mean:</strong> ${data.mean.toFixed(1)}</p>
+                                        <p><strong>Std Dev:</strong> ${data.std.toFixed(1)}</p>
+                                        <p><strong>Range:</strong> ${data.min} - ${data.max}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    statsHtml += '</div>';
+                    document.getElementById('statsContainer').innerHTML = statsHtml;
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function analyzeGrouped() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/analyze_grouped');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('plotContainer').innerHTML = 
+                        `<img src="data:image/png;base64,${result.plot}" alt="Grouped Analysis">`;
+                    document.getElementById('statsContainer').innerHTML = 
+                        '<h5>Grouped Analysis</h5><p>This chart shows the distribution of numbers across different positions.</p>';
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function analyzeConfidence() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/analyze_confidence');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('plotContainer').innerHTML = 
+                        `<img src="data:image/png;base64,${result.plot}" alt="Confidence Intervals">`;
+                    document.getElementById('statsContainer').innerHTML = 
+                        '<h5>Confidence Interval Analysis</h5><p>This chart shows confidence intervals for number predictions.</p>';
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function runBacktest() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/run_backtest');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('backtestContainer').style.display = 'block';
+                    document.getElementById('backtestContainer').textContent = result.output;
+                    document.getElementById('plotContainer').innerHTML = '';
+                    document.getElementById('statsContainer').innerHTML = 
+                        '<h5>Backtest Results</h5><p>Strategy performance analysis completed.</p>';
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function showSampleData() {
+            showLoading();
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/get_sample_data');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const data = result.data;
+                    let tableHtml = '<h5>Sample Data (First 10 Rows)</h5><div class="table-responsive"><table class="table table-striped">';
+                    
+                    // Header
+                    if (data.length > 0) {
+                        tableHtml += '<thead><tr>';
+                        Object.keys(data[0]).forEach(key => {
+                            tableHtml += `<th>${key}</th>`;
+                        });
+                        tableHtml += '</tr></thead>';
+                    }
+                    
+                    // Body
+                    tableHtml += '<tbody>';
+                    data.forEach(row => {
+                        tableHtml += '<tr>';
+                        Object.values(row).forEach(value => {
+                            tableHtml += `<td>${value}</td>`;
+                        });
+                        tableHtml += '</tr>';
+                    });
+                    tableHtml += '</tbody></table></div>';
+                    
+                    document.getElementById('dataTableContainer').style.display = 'block';
+                    document.getElementById('dataTableContainer').innerHTML = tableHtml;
+                    document.getElementById('plotContainer').innerHTML = '';
+                    document.getElementById('statsContainer').innerHTML = '';
+                    document.getElementById('backtestContainer').style.display = 'none';
+                } else {
+                    showAlert(`❌ Error: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'danger');
+            }
+            
+            hideLoading();
+        }
+
+        async function downloadData() {
+            try {
+                window.open('/download_data', '_blank');
+            } catch (error) {
+                showAlert(`❌ Download error: ${error.message}`, 'danger');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            showAlert('🚀 TOTO Analysis Web Application loaded successfully!', 'success');
+        });
+    </script>
+</body>
+</html>
