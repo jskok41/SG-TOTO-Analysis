@@ -9,7 +9,7 @@ from collections import defaultdict
 
 
 # Plot value counts for each column indivudually (Num1 - Num7)
-def individual_bar_chart(results, column_names):
+def individual_bar_chart(results, column_names, return_fig=False):
     
     # Loop for each number (Num1 - Num7)
     for name in column_names:
@@ -21,19 +21,24 @@ def individual_bar_chart(results, column_names):
         full_counts = pd.Series(index=range(1, 50), dtype=int).add(counts, fill_value=0)
 
         # Plot bar chart
-        full_counts.plot(kind='bar', figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(10, 4))
+        full_counts.plot(kind='bar', ax=ax)
         plt.xticks(ticks=np.arange(49), labels=np.arange(1, 50), rotation=90)
         plt.xlabel('Value')
         plt.ylabel('Count')
         plt.title(f'{name} Counts')
         plt.grid(axis='y', linestyle='--', alpha=0.7)
         plt.tight_layout()
-        plt.show()
+        
+        if return_fig:
+            return fig
+        else:
+            plt.show()
 
 
 
 # Plot value counts for each column together (Num1 - Num6)
-def grouped_bar_chart(results, column_names):
+def grouped_bar_chart(results, column_names, return_fig=False):
     
     # Define empty dataset to store Num1 - Num6
     datasets = []
@@ -79,12 +84,16 @@ def grouped_bar_chart(results, column_names):
     ax.grid(axis='y', linestyle='--', alpha=0.7)
     ax.legend()
     plt.tight_layout()
-    plt.show()
+    
+    if return_fig:
+        return fig
+    else:
+        plt.show()
 
 
 
 # Plot total number of times value appear between Num1 - Num7
-def overall_frequency_chart(results):
+def overall_frequency_chart(results, return_fig=False):
 
     # Add all numbers from Num1 - Num7 into 1 dataset
     all_numbers = pd.concat([results[col] for col in results.columns])
@@ -99,19 +108,24 @@ def overall_frequency_chart(results):
     print(full_counts)
 
     # Plot overall frequency
-    full_counts.plot(kind='bar', figsize=(12, 5), color='steelblue')
+    fig, ax = plt.subplots(figsize=(12, 5))
+    full_counts.plot(kind='bar', ax=ax, color='steelblue')
     plt.xticks(ticks=np.arange(49), labels=np.arange(1, 50), rotation=90)
     plt.xlabel('Number')
     plt.ylabel('Total Count')
     plt.title('Overall Frequency of Numbers (Num1 to Num7)')
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.show()
+    
+    if return_fig:
+        return fig
+    else:
+        plt.show()
 
 
 
 # Plot 95% confidence interval 
-def confidence_interval(results):
+def confidence_interval(results, return_fig=False):
 
     # 95% confidence interval
     z = norm.ppf(0.975)
@@ -162,3 +176,43 @@ def confidence_interval(results):
             print(f"{number:6d} | {count:6d} | {p:10.4f} | {p_pct:5.1f}% | {ci_lower_pct:11.1f}% | {ci_upper_pct:11.1f}% | {ci_width:11.1f}%")
 
         print("-" * 84)
+
+    # Create visualization for confidence intervals
+    if return_fig:
+        fig, ax = plt.subplots(figsize=(15, 8))
+        
+        # Use the first column for visualization
+        col = results.columns[0]
+        num_series = results[col]
+        total_trials = len(num_series)
+        counts = num_series.value_counts().sort_index()
+        full_counts = pd.Series(0, index=range(1, 50)).add(counts, fill_value=0).astype(int)
+        
+        numbers = []
+        proportions = []
+        ci_lowers = []
+        ci_uppers = []
+        
+        for number in range(1, 50):
+            count = full_counts[number]
+            p = count / total_trials
+            se = np.sqrt(p * (1 - p) / total_trials)
+            ci_lower = max(0, p - z * se)
+            ci_upper = min(1, p + z * se)
+            
+            numbers.append(number)
+            proportions.append(p * 100)
+            ci_lowers.append(ci_lower * 100)
+            ci_uppers.append(ci_upper * 100)
+        
+        # Plot confidence intervals
+        ax.errorbar(numbers, proportions, yerr=[np.array(proportions) - np.array(ci_lowers), 
+                                               np.array(ci_uppers) - np.array(proportions)], 
+                   fmt='o', capsize=5, capthick=2, elinewidth=2, markersize=6)
+        ax.set_xlabel('Number')
+        ax.set_ylabel('Percentage (%)')
+        ax.set_title(f'95% Confidence Intervals for {col}')
+        ax.grid(True, alpha=0.3)
+        plt.tight_layout()
+        
+        return fig
