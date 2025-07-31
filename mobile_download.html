@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG TOTO Analysis - Mobile Download</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .download-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .file-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .file-size {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .qr-container {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .qr-code {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #00d2d3;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+        }
+        
+        .copy-link {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 SG TOTO Analysis</h1>
+        <h2 style="text-align: center; margin-bottom: 20px;">Mobile Download</h2>
+        
+        <div class="info-box">
+            <h3>📱 Mobile Access Instructions</h3>
+            <p>Since you're accessing this from a mobile device, here are several ways to download the files:</p>
+        </div>
+
+        <div class="section">
+            <h3>📥 Method 1: Direct Download Links</h3>
+            <p>Click these links to download directly to your phone:</p>
+            
+            <div class="download-item">
+                <div class="file-name">Complete Package (ZIP)</div>
+                <div class="file-size">11.3 MB • Recommended for most users</div>
+                <a href="SG-TOTO-Analysis-Complete-Package.zip" class="download-btn" download>
+                    📦 Download ZIP Package
+                </a>
+            </div>
+            
+            <div class="download-item">
+                <div class="file-name">Complete Package (TAR.GZ)</div>
+                <div class="file-size">11.2 MB • For Linux/macOS users</div>
+                <a href="SG-TOTO-Analysis-Complete-Package.tar.gz" class="download-btn" download>
+                    📦 Download TAR.GZ Package
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📁 Method 2: Individual Files</h3>
+            <p>Download specific components:</p>
+            
+            <div class="download-item">
+                <div class="file-name">Setup Guide</div>
+                <div class="file-size">Complete installation instructions</div>
+                <a href="download-package/README_DOWNLOAD.md" class="download-btn" download>
+                    📖 Download Setup Guide
+                </a>
+            </div>
+            
+            <div class="download-item">
+                <div class="file-name">Python Dependencies</div>
+                <div class="file-size">List of required Python packages</div>
+                <a href="download-package/requirements.txt" class="download-btn" download>
+                    📋 Download Dependencies
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔗 Method 3: File Transfer Options</h3>
+            <p>If direct download doesn't work, try these alternatives:</p>
+            
+            <div class="instructions">
+                <h4>Option A: Email to Yourself</h4>
+                <ol>
+                    <li>Download the ZIP file to your phone</li>
+                    <li>Email it to yourself from your phone</li>
+                    <li>Open the email on your computer</li>
+                    <li>Download and extract the file</li>
+                </ol>
+            </div>
+            
+            <div class="instructions">
+                <h4>Option B: Cloud Storage</h4>
+                <ol>
+                    <li>Download to your phone</li>
+                    <li>Upload to Google Drive, Dropbox, or iCloud</li>
+                    <li>Access from your computer</li>
+                    <li>Download and extract</li>
+                </ol>
+            </div>
+            
+            <div class="instructions">
+                <h4>Option C: USB Transfer</h4>
+                <ol>
+                    <li>Download to your phone</li>
+                    <li>Connect phone to computer via USB</li>
+                    <li>Transfer the file to your computer</li>
+                    <li>Extract and use</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📋 Package Contents</h3>
+            <div class="info-box">
+                <p><strong>98 files</strong> including:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>9 Python analysis scripts</li>
+                    <li>Complete Next.js web application</li>
+                    <li>Standalone HTML application</li>
+                    <li>Historical TOTO data files</li>
+                    <li>Comprehensive documentation</li>
+                    <li>Automated setup scripts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🚀 Quick Setup After Download</h3>
+            <div class="instructions">
+                <ol>
+                    <li>Extract the ZIP file on your computer</li>
+                    <li>Open terminal/command prompt</li>
+                    <li>Navigate to the extracted folder</li>
+                    <li>Run: <code>python main.py</code></li>
+                    <li>For web app: <code>cd toto-web-app && npm run dev</code></li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📞 Need Help?</h3>
+            <div class="info-box">
+                <p>If you have trouble downloading or setting up:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Check the README_DOWNLOAD.md file for detailed instructions</li>
+                    <li>Ensure you have Python 3.8+ installed on your computer</li>
+                    <li>For web app, you'll need Node.js 16+ installed</li>
+                    <li>The package works on Windows, macOS, and Linux</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add copy functionality for any text elements
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+        
+        // Add download progress tracking
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.textContent = '⏳ Downloading...';
+                setTimeout(() => {
+                    this.textContent = this.getAttribute('data-original') || this.textContent;
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
