@@ -787,8 +787,9 @@
             
             // Chart dimensions with larger padding for better visibility
             const padding = 60;
+            const bottomPadding = 80; // Increased bottom padding for x-axis labels
             const chartWidth = width - 2 * padding;
-            const chartHeight = height - 2 * padding;
+            const chartHeight = height - padding - bottomPadding;
             
             // Create array with ALL numbers 1-49, including zero frequencies
             const allNumbersArray = [];
@@ -853,7 +854,7 @@
             allNumbersArray.forEach((item, index) => {
                 const x = padding + index * barWidth;
                 const barHeight = maxFreq > 0 ? (item.frequency / maxFreq) * chartHeight : 0;
-                const y = height - padding - barHeight;
+                const y = height - bottomPadding - barHeight;
                 
                 // Check if this number is in the latest winning numbers
                 const isLatestNumber = latestNumbers.includes(item.number);
@@ -865,7 +866,7 @@
                 if (item.frequency > 0) {
                     if (isLatestNumber) {
                         // Red gradient for latest winning numbers (highest priority)
-                        const gradient = ctx.createLinearGradient(x, y, x, height - padding);
+                        const gradient = ctx.createLinearGradient(x, y, x, height - bottomPadding);
                         gradient.addColorStop(0, '#ef4444');
                         gradient.addColorStop(1, '#dc2626');
                         ctx.fillStyle = gradient;
@@ -877,7 +878,7 @@
                         ctx.strokeRect(x, y, actualBarWidth, barHeight);
                     } else if (predictions.some(pred => pred.numbers.includes(item.number))) {
                         // Use prediction color for numbers in predictions
-                        const gradient = ctx.createLinearGradient(x, y, x, height - padding);
+                        const gradient = ctx.createLinearGradient(x, y, x, height - bottomPadding);
                         gradient.addColorStop(0, color.bg);
                         gradient.addColorStop(1, color.border);
                         ctx.fillStyle = gradient;
@@ -889,7 +890,7 @@
                         ctx.strokeRect(x, y, actualBarWidth, barHeight);
                     } else {
                         // Blue gradient for other numbers
-                        const gradient = ctx.createLinearGradient(x, y, x, height - padding);
+                        const gradient = ctx.createLinearGradient(x, y, x, height - bottomPadding);
                         gradient.addColorStop(0, '#3b82f6');
                         gradient.addColorStop(1, '#1d4ed8');
                         ctx.fillStyle = gradient;
@@ -904,29 +905,47 @@
                     if (isLatestNumber) {
                         // Red line for latest winning numbers with zero frequency
                         ctx.fillStyle = '#fca5a5';
-                        ctx.fillRect(x, height - padding - 2, actualBarWidth, 2);
+                        ctx.fillRect(x, height - bottomPadding - 2, actualBarWidth, 2);
                     } else if (predictions.some(pred => pred.numbers.includes(item.number))) {
                         // Use prediction color for zero-frequency prediction numbers
                         ctx.fillStyle = color.bg;
-                        ctx.fillRect(x, height - padding - 2, actualBarWidth, 2);
+                        ctx.fillRect(x, height - bottomPadding - 2, actualBarWidth, 2);
                     } else {
                         // Gray line for other zero frequency numbers
                         ctx.fillStyle = '#e5e7eb';
-                        ctx.fillRect(x, height - padding - 1, actualBarWidth, 1);
+                        ctx.fillRect(x, height - bottomPadding - 1, actualBarWidth, 1);
                     }
                 }
                 
                 // Draw number label (larger font for better visibility)
                 ctx.fillStyle = isLatestNumber ? '#dc2626' : (predictions.some(pred => pred.numbers.includes(item.number)) ? color.text : '#374151');
-                ctx.font = '12px Arial';
+                ctx.font = 'bold 14px Arial'; // Increased font size and made bold
                 ctx.textAlign = 'center';
-                ctx.fillText(item.number.toString(), x + actualBarWidth / 2, height - padding + 20);
+                
+                // Add background rectangle for better contrast
+                const textWidth = ctx.measureText(item.number.toString()).width;
+                const textHeight = 16;
+                const textX = x + actualBarWidth / 2 - textWidth / 2 - 2;
+                const textY = height - bottomPadding + 15;
+                
+                // Draw background rectangle
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; // Semi-transparent white
+                ctx.fillRect(textX, textY - textHeight + 2, textWidth + 4, textHeight);
+                
+                // Draw border around background
+                ctx.strokeStyle = '#e5e7eb';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(textX, textY - textHeight + 2, textWidth + 4, textHeight);
+                
+                // Draw the number text
+                ctx.fillStyle = isLatestNumber ? '#dc2626' : (predictions.some(pred => pred.numbers.includes(item.number)) ? color.text : '#374151');
+                ctx.fillText(item.number.toString(), x + actualBarWidth / 2, height - bottomPadding + 20);
                 
                 // Draw frequency label (only for non-zero frequencies to avoid clutter)
                 if (item.frequency > 0) {
                     ctx.fillStyle = '#6b7280';
-                    ctx.font = '10px Arial';
-                    ctx.fillText(item.frequency.toString(), x + actualBarWidth / 2, y - 5);
+                    ctx.font = 'bold 11px Arial'; // Made frequency labels bold too
+                    ctx.fillText(item.frequency.toString(), x + actualBarWidth / 2, y - 8);
                 }
             });
             
@@ -936,14 +955,14 @@
             
             // X-axis
             ctx.beginPath();
-            ctx.moveTo(padding, height - padding);
-            ctx.lineTo(width - padding, height - padding);
+            ctx.moveTo(padding, height - bottomPadding);
+            ctx.lineTo(width - padding, height - bottomPadding);
             ctx.stroke();
             
             // Y-axis
             ctx.beginPath();
             ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(padding, height - bottomPadding);
             ctx.stroke();
             
             // Y-axis labels
@@ -951,9 +970,31 @@
             ctx.font = '14px Arial';
             ctx.textAlign = 'right';
             for (let i = 0; i <= 5; i++) {
-                const y = height - padding - (i / 5) * chartHeight;
+                const y = height - bottomPadding - (i / 5) * chartHeight;
                 const value = Math.round((i / 5) * maxFreq);
                 ctx.fillText(value.toString(), padding - 10, y + 5);
+            }
+            
+            // Draw horizontal grid lines for better readability
+            ctx.strokeStyle = '#f3f4f6';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 5; i++) {
+                const y = height - bottomPadding - (i / 5) * chartHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            
+            // Draw vertical grid lines every 5 numbers for better reference
+            ctx.strokeStyle = '#f9fafb';
+            ctx.lineWidth = 1;
+            for (let i = 5; i < 49; i += 5) {
+                const x = padding + i * barWidth;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - bottomPadding);
+                ctx.stroke();
             }
         }
 
