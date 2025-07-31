@@ -749,7 +749,7 @@
             
             // Set canvas size to fill the container and make it large
             const container = canvas.parentElement;
-            const width = Math.max(1200, container.clientWidth - 40); // At least 1200px wide
+            const width = Math.max(1600, container.clientWidth - 40); // Increased minimum width to 1600px for better number spacing
             const height = Math.max(800, window.innerHeight - 300); // At least 800px tall, or fill most of viewport
             canvas.width = width;
             canvas.height = height;
@@ -801,6 +801,10 @@
                     percentage: (freq / (data.length * 6)) * 100
                 });
             }
+            
+            // Debug: Log to ensure all 49 numbers are present
+            console.log('Total numbers in array:', allNumbersArray.length);
+            console.log('Numbers range:', allNumbersArray[0]?.number, 'to', allNumbersArray[allNumbersArray.length-1]?.number);
             
             const maxFreq = Math.max(...allNumbersArray.map(item => item.frequency));
             
@@ -996,6 +1000,11 @@
                 ctx.lineTo(x, height - bottomPadding);
                 ctx.stroke();
             }
+            
+            // Debug: Verify all numbers were rendered
+            console.log('Chart rendering complete. All 49 numbers should be visible on x-axis.');
+            console.log('Chart width:', width, 'Chart height:', height);
+            console.log('Bar width:', barWidth, 'Total bars drawn:', allNumbersArray.length);
         }
 
         function showTab(tabName) {
