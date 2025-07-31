@@ -109,13 +109,13 @@ export default function Home() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Prediction Methods</CardTitle>
-                <Target className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Avg Prize</CardTitle>
+                <Zap className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{predictions.length}</div>
+                <div className="text-2xl font-bold">${(summary.averagePrizeAmount / 1000000).toFixed(1)}M</div>
                 <p className="text-xs text-muted-foreground">
-                  Different analysis approaches
+                  Max: ${(summary.maxPrizeAmount / 1000000).toFixed(1)}M
                 </p>
               </CardContent>
             </Card>
@@ -124,37 +124,23 @@ export default function Home() {
 
         {/* Main Content */}
         <Tabs defaultValue="predictions" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="predictions">Predictions</TabsTrigger>
-            <TabsTrigger value="statistics">Statistics</TabsTrigger>
+            <TabsTrigger value="analysis">Analysis</TabsTrigger>
             <TabsTrigger value="charts">Charts</TabsTrigger>
-            <TabsTrigger value="data">Raw Data</TabsTrigger>
           </TabsList>
 
           {/* Predictions Tab */}
           <TabsContent value="predictions" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5" />
-                  Number Predictions
-                </CardTitle>
-                <CardDescription>
-                  AI-powered predictions using multiple statistical methods
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {predictions.map((prediction, index) => (
-                    <PredictionCard key={index} prediction={prediction} index={index} />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {predictions.map((prediction, index) => (
+                <PredictionCard key={index} prediction={prediction} />
+              ))}
+            </div>
           </TabsContent>
 
-          {/* Statistics Tab */}
-          <TabsContent value="statistics" className="space-y-6">
+          {/* Analysis Tab */}
+          <TabsContent value="analysis" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Most Frequent Numbers */}
               <Card>
@@ -175,7 +161,7 @@ export default function Home() {
                         <div className="text-right">
                           <div className="text-sm font-medium">{item.percentage.toFixed(1)}%</div>
                           <div className="text-xs text-muted-foreground">
-                            CI: {item.confidenceInterval.lower.toFixed(1)}% - {item.confidenceInterval.upper.toFixed(1)}%
+                            Frequency: {item.frequency} times
                           </div>
                         </div>
                       </div>
@@ -203,7 +189,7 @@ export default function Home() {
                         <div className="text-right">
                           <div className="text-sm font-medium">{item.percentage.toFixed(1)}%</div>
                           <div className="text-xs text-muted-foreground">
-                            CI: {item.confidenceInterval.lower.toFixed(1)}% - {item.confidenceInterval.upper.toFixed(1)}%
+                            Frequency: {item.frequency} times
                           </div>
                         </div>
                       </div>
@@ -212,50 +198,6 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Position Analysis */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Position Analysis</CardTitle>
-                <CardDescription>Analysis by number position</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {summary?.positionAnalysis.map((pos, index) => (
-                    <Card key={index} className="border">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{pos.position}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div>
-                          <div className="text-sm font-medium text-green-600">Most Frequent:</div>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {pos.mostFrequent.map(num => (
-                              <Badge key={num} variant="secondary" className="text-xs">
-                                {num}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-red-600">Least Frequent:</div>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {pos.leastFrequent.map(num => (
-                              <Badge key={num} variant="outline" className="text-xs">
-                                {num}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">Average:</span> {pos.average.toFixed(1)}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
           {/* Charts Tab */}
@@ -269,9 +211,9 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData?.frequencyChart}>
+                    <BarChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="number" />
+                      <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
                       <Bar dataKey="frequency" fill="#3b82f6" />
@@ -280,91 +222,28 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              {/* Confidence Intervals */}
+              {/* Percentage Chart */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Confidence Intervals</CardTitle>
-                  <CardDescription>95% confidence intervals for each number</CardDescription>
+                  <CardTitle>Number Percentage Distribution</CardTitle>
+                  <CardDescription>Percentage distribution of numbers</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={chartData?.confidenceIntervals}>
+                    <AreaChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="number" />
+                      <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Area type="monotone" dataKey="upper" stackId="1" stroke="#8884d8" fill="#8884d8" />
-                      <Area type="monotone" dataKey="lower" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
-                      <Area type="monotone" dataKey="percentage" stroke="#ff7300" fill="#ff7300" fillOpacity={0.3} strokeWidth={2} />
+                      <Area type="monotone" dataKey="percentage" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
             </div>
           </TabsContent>
-
-          {/* Data Tab */}
-          <TabsContent value="data" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Raw TOTO Data</CardTitle>
-                <CardDescription>Historical TOTO results data</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-2">Date</th>
-                        <th className="text-left p-2">Num 1</th>
-                        <th className="text-left p-2">Num 2</th>
-                        <th className="text-left p-2">Num 3</th>
-                        <th className="text-left p-2">Num 4</th>
-                        <th className="text-left p-2">Num 5</th>
-                        <th className="text-left p-2">Num 6</th>
-                        <th className="text-left p-2">Additional</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.slice(0, 20).map((row, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-50">
-                          <td className="p-2">{row.Date}</td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['Winning Number 1']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['2']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['3']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['4']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['5']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="outline">{row['6']}</Badge>
-                          </td>
-                          <td className="p-2">
-                            <Badge variant="secondary">{row['Additional Number']}</Badge>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="mt-4 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Showing first 20 results of {data.length} total draws
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
-        
+
         {/* Footer */}
         <Footer />
       </div>

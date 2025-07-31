@@ -1,29 +1,22 @@
 export interface TotoResult {
-  Date: string;
-  'Winning Number 1': number;
-  '2': number;
-  '3': number;
-  '4': number;
-  '5': number;
-  '6': number;
-  'Additional Number': number;
+  drawNumber: string;
+  drawDate: string;
+  numbers: number[];
+  additionalNumber: number;
+  prizeAmount: number;
 }
 
 export interface NumberFrequency {
   number: number;
   frequency: number;
   percentage: number;
-  confidenceInterval: {
-    lower: number;
-    upper: number;
-  };
 }
 
 export interface PredictionResult {
   numbers: number[];
   confidence: number;
   method: string;
-  reasoning: string;
+  timestamp: string;
 }
 
 export interface PositionAnalysis {
@@ -41,6 +34,7 @@ export interface StatisticalSummary {
   };
   mostFrequentNumbers: NumberFrequency[];
   leastFrequentNumbers: NumberFrequency[];
-  positionAnalysis: PositionAnalysis[];
-  overallFrequency: NumberFrequency[];
+  averagePrizeAmount: number;
+  maxPrizeAmount: number;
+  minPrizeAmount: number;
 } 
