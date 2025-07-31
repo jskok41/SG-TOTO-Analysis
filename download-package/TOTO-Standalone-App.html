@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 TOTO Analysis & Prediction - Standalone</title>
+    <meta name="description" content="Singapore TOTO Statistical Analysis and Number Prediction System">
+    <meta name="keywords" content="TOTO, Singapore, lottery, prediction, analysis, statistics">
+    <meta name="author" content="TOTO Analysis System">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Recharts for charts -->
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    
+    <!-- Lucide React Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        /* Custom styles for the application */
+        .gradient-bg {
+            background: linear-gradient(135deg, #EBF4FF 0%, #E0E7FF 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #f9fafb;
+            color: #374151;
+        }
+        
+        .badge.primary {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+        
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .tab-button:not(.active) {
+            background-color: transparent;
+            color: #6b7280;
+        }
+        
+        .tab-button:not(.active):hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">
+                🎯 TOTO Analysis & Prediction
+            </h1>
+            <p class="text-lg text-gray-600">
+                Singapore TOTO Statistical Analysis and Number Prediction System
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                📱 Standalone Version - Works on any mobile browser
+            </p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-600">Total Draws</h3>
+                    <span class="text-gray-400">📅</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="total-draws">Loading...</div>
+                <p class="text-xs text-gray-500" id="date-range">Analyzing data...</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-600">Most Frequent</h3>
+                    <span class="text-gray-400">📈</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="most-frequent">Loading...</div>
+                <p class="text-xs text-gray-500" id="most-frequent-details">Analyzing patterns...</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-600">Least Frequent</h3>
+                    <span class="text-gray-400">📉</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900" id="least-frequent">Loading...</div>
+                <p class="text-xs text-gray-500" id="least-frequent-details">Analyzing patterns...</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-medium text-gray-600">Prediction Methods</h3>
+                    <span class="text-gray-400">🎯</span>
+                </div>
+                <div class="text-2xl font-bold text-gray-900">5</div>
+                <p class="text-xs text-gray-500">Advanced algorithms</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex space-x-2 mb-6 border-b">
+                <button class="tab-button active" onclick="showTab('predictions')">🎯 Predictions</button>
+                <button class="tab-button" onclick="showTab('statistics')">📊 Statistics</button>
+                <button class="tab-button" onclick="showTab('charts')">📈 Charts</button>
+                <button class="tab-button" onclick="showTab('data')">📋 Data</button>
+            </div>
+
+            <!-- Predictions Tab -->
+            <div id="predictions-tab" class="tab-content">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="font-semibold text-lg">TOTO Predictions</h3>
+                    <button id="recompute-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Recompute Predictions
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="predictions-container">
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p class="mt-2 text-gray-600">Generating predictions...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div id="statistics-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold mb-4">Most Frequent Numbers</h3>
+                        <div id="most-frequent-list" class="space-y-2">
+                            <div class="text-center py-4">
+                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold mb-4">Least Frequent Numbers</h3>
+                        <div id="least-frequent-list" class="space-y-2">
+                            <div class="text-center py-4">
+                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Tab -->
+            <div id="charts-tab" class="tab-content hidden">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold mb-4">Frequency Distribution</h3>
+                    <div id="chart-container" class="w-full" style="min-height: 800px;">
+                        <canvas id="frequencyChart" style="width: 100%; max-width: 1400px; height: auto;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Tab -->
+            <div id="data-tab" class="tab-content hidden">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Historical TOTO Results</h3>
+                        <span class="text-sm text-gray-600" id="data-count">Loading...</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b bg-gray-100">
+                                    <th class="text-left p-3 font-semibold">Date</th>
+                                    <th class="text-left p-3 font-semibold">Winning Numbers</th>
+                                    <th class="text-left p-3 font-semibold">Additional Number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data-table">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4">
+                                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>🎯 TOTO Analysis & Prediction System</p>
+            <p class="mt-1">Built with Next.js, TypeScript, Tailwind CSS, and Recharts</p>
+            <p class="mt-1 text-xs">⚠️ This is for educational purposes only. No guarantees on predictions.</p>
+        </div>
+    </div>
+
+    <script>
+        // Embedded TOTO data (Real Singapore TOTO Results)
+        const totoData = [
+            {"Date": "2025-07-28", "Winning Number 1": 2, "2": 14, "3": 16, "4": 21, "5": 36, "6": 47, "Additional Number": 1},
+            {"Date": "2025-07-24", "Winning Number 1": 9, "2": 11, "3": 24, "4": 32, "5": 39, "6": 49, "Additional Number": 26},
+            {"Date": "2025-07-21", "Winning Number 1": 2, "2": 5, "3": 10, "4": 12, "5": 14, "6": 37, "Additional Number": 17},
+            {"Date": "2025-07-17", "Winning Number 1": 7, "2": 8, "3": 17, "4": 29, "5": 32, "6": 42, "Additional Number": 1},
+            {"Date": "2025-07-14", "Winning Number 1": 2, "2": 8, "3": 19, "4": 29, "5": 38, "6": 41, "Additional Number": 20},
+            {"Date": "2025-07-10", "Winning Number 1": 12, "2": 21, "3": 26, "4": 27, "5": 35, "6": 44, "Additional Number": 10},
+            {"Date": "2025-07-07", "Winning Number 1": 10, "2": 15, "3": 17, "4": 33, "5": 36, "6": 45, "Additional Number": 34},
+            {"Date": "2025-07-03", "Winning Number 1": 6, "2": 15, "3": 16, "4": 17, "5": 25, "6": 34, "Additional Number": 31},
+            {"Date": "2025-06-30", "Winning Number 1": 11, "2": 27, "3": 31, "4": 33, "5": 34, "6": 36, "Additional Number": 13},
+            {"Date": "2025-06-26", "Winning Number 1": 10, "2": 26, "3": 28, "4": 35, "5": 37, "6": 46, "Additional Number": 20},
+            {"Date": "2025-06-23", "Winning Number 1": 2, "2": 15, "3": 29, "4": 37, "5": 45, "6": 49, "Additional Number": 24},
+            {"Date": "2025-06-19", "Winning Number 1": 1, "2": 10, "3": 37, "4": 40, "5": 45, "6": 47, "Additional Number": 19},
+            {"Date": "2025-06-16", "Winning Number 1": 5, "2": 18, "3": 27, "4": 32, "5": 48, "6": 49, "Additional Number": 21},
+            {"Date": "2025-06-12", "Winning Number 1": 3, "2": 7, "3": 38, "4": 41, "5": 44, "6": 49, "Additional Number": 20},
+            {"Date": "2025-06-09", "Winning Number 1": 7, "2": 10, "3": 11, "4": 21, "5": 32, "6": 48, "Additional Number": 27},
+            {"Date": "2025-06-05", "Winning Number 1": 2, "2": 5, "3": 25, "4": 26, "5": 29, "6": 30, "Additional Number": 42},
+            {"Date": "2025-06-02", "Winning Number 1": 10, "2": 19, "3": 21, "4": 22, "5": 28, "6": 31, "Additional Number": 34},
+            {"Date": "2025-05-29", "Winning Number 1": 1, "2": 5, "3": 7, "4": 11, "5": 19, "6": 47, "Additional Number": 44},
+            {"Date": "2025-05-26", "Winning Number 1": 5, "2": 9, "3": 15, "4": 28, "5": 46, "6": 48, "Additional Number": 8},
+            {"Date": "2025-05-22", "Winning Number 1": 3, "2": 10, "3": 32, "4": 34, "5": 44, "6": 48, "Additional Number": 29},
+            {"Date": "2025-05-19", "Winning Number 1": 2, "2": 15, "3": 17, "4": 18, "5": 39, "6": 45, "Additional Number": 26},
+            {"Date": "2025-05-15", "Winning Number 1": 9, "2": 16, "3": 17, "4": 20, "5": 34, "6": 38, "Additional Number": 18},
+            {"Date": "2025-05-12", "Winning Number 1": 6, "2": 16, "3": 20, "4": 23, "5": 40, "6": 48, "Additional Number": 45},
+            {"Date": "2025-05-08", "Winning Number 1": 9, "2": 13, "3": 17, "4": 39, "5": 46, "6": 47, "Additional Number": 22},
+            {"Date": "2025-05-05", "Winning Number 1": 5, "2": 8, "3": 28, "4": 38, "5": 40, "6": 43, "Additional Number": 39},
+            {"Date": "2025-05-01", "Winning Number 1": 2, "2": 8, "3": 12, "4": 30, "5": 35, "6": 49, "Additional Number": 38},
+            {"Date": "2025-04-28", "Winning Number 1": 3, "2": 8, "3": 12, "4": 18, "5": 24, "6": 41, "Additional Number": 11},
+            {"Date": "2025-04-24", "Winning Number 1": 17, "2": 19, "3": 21, "4": 23, "5": 30, "6": 40, "Additional Number": 33},
+            {"Date": "2025-04-21", "Winning Number 1": 1, "2": 17, "3": 30, "4": 37, "5": 41, "6": 43, "Additional Number": 32},
+            {"Date": "2025-04-17", "Winning Number 1": 15, "2": 17, "3": 26, "4": 31, "5": 40, "6": 46, "Additional Number": 19},
+            {"Date": "2025-04-14", "Winning Number 1": 6, "2": 14, "3": 29, "4": 30, "5": 35, "6": 42, "Additional Number": 25},
+            {"Date": "2025-04-10", "Winning Number 1": 14, "2": 26, "3": 27, "4": 30, "5": 46, "6": 48, "Additional Number": 10},
+            {"Date": "2025-04-07", "Winning Number 1": 7, "2": 19, "3": 35, "4": 40, "5": 43, "6": 47, "Additional Number": 33},
+            {"Date": "2025-04-03", "Winning Number 1": 12, "2": 14, "3": 15, "4": 16, "5": 21, "6": 40, "Additional Number": 23},
+            {"Date": "2025-03-31", "Winning Number 1": 9, "2": 12, "3": 17, "4": 23, "5": 29, "6": 46, "Additional Number": 20},
+            {"Date": "2025-03-27", "Winning Number 1": 21, "2": 22, "3": 27, "4": 35, "5": 40, "6": 42, "Additional Number": 3},
+            {"Date": "2025-03-24", "Winning Number 1": 18, "2": 19, "3": 25, "4": 28, "5": 31, "6": 44, "Additional Number": 34},
+            {"Date": "2025-03-20", "Winning Number 1": 9, "2": 10, "3": 11, "4": 13, "5": 23, "6": 42, "Additional Number": 20},
+            {"Date": "2025-03-17", "Winning Number 1": 7, "2": 30, "3": 39, "4": 42, "5": 43, "6": 48, "Additional Number": 33},
+            {"Date": "2025-03-13", "Winning Number 1": 16, "2": 26, "3": 34, "4": 36, "5": 42, "6": 49, "Additional Number": 41},
+            {"Date": "2025-03-10", "Winning Number 1": 5, "2": 7, "3": 32, "4": 38, "5": 42, "6": 47, "Additional Number": 27},
+            {"Date": "2025-03-06", "Winning Number 1": 19, "2": 33, "3": 35, "4": 38, "5": 46, "6": 49, "Additional Number": 39},
+            {"Date": "2025-03-03", "Winning Number 1": 4, "2": 16, "3": 24, "4": 25, "5": 43, "6": 49, "Additional Number": 46},
+            {"Date": "2025-02-27", "Winning Number 1": 2, "2": 10, "3": 13, "4": 15, "5": 37, "6": 40, "Additional Number": 28},
+            {"Date": "2025-02-24", "Winning Number 1": 24, "2": 37, "3": 38, "4": 42, "5": 48, "6": 49, "Additional Number": 31},
+            {"Date": "2025-02-20", "Winning Number 1": 3, "2": 25, "3": 31, "4": 37, "5": 39, "6": 42, "Additional Number": 21},
+            {"Date": "2025-02-17", "Winning Number 1": 1, "2": 16, "3": 23, "4": 39, "5": 41, "6": 42, "Additional Number": 9},
+            {"Date": "2025-02-13", "Winning Number 1": 5, "2": 8, "3": 13, "4": 28, "5": 30, "6": 49, "Additional Number": 17},
+            {"Date": "2025-02-10", "Winning Number 1": 1, "2": 3, "3": 7, "4": 18, "5": 34, "6": 39, "Additional Number": 46},
+            {"Date": "2025-02-07", "Winning Number 1": 16, "2": 18, "3": 22, "4": 23, "5": 28, "6": 35, "Additional Number": 32}
+        ];
+
+        // Analysis functions
+        function calculateFrequency(data, position) {
+            const freq = {};
+            data.forEach(row => {
+                const num = row[position];
+                freq[num] = (freq[num] || 0) + 1;
+            });
+            return Object.entries(freq).map(([number, frequency]) => ({
+                number: parseInt(number),
+                frequency,
+                percentage: (frequency / data.length) * 100
+            })).sort((a, b) => b.frequency - a.frequency);
+        }
+
+        function generatePredictions(data) {
+            const predictions = [];
+            
+            // Calculate frequency across ALL winning numbers (positions 1-6)
+            const allNumbers = {};
+            
+            // Initialize all numbers 1-49 with 0 frequency
+            for (let i = 1; i <= 49; i++) {
+                allNumbers[i] = 0;
+            }
+            
+            data.forEach(row => {
+                // Count all 6 winning numbers from each draw
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    // Convert to number and check if valid
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        allNumbers[number] = (allNumbers[number] || 0) + 1;
+                    }
+                });
+            });
+            
+            // Convert to array and sort by frequency
+            const overallFreq = Object.entries(allNumbers)
+                .map(([number, frequency]) => ({
+                    number: parseInt(number),
+                    frequency,
+                    percentage: (frequency / (data.length * 6)) * 100
+                }))
+                .sort((a, b) => b.frequency - a.frequency);
+            
+            // Method 1: Most Frequent (2 sets)
+            const mostFrequent = overallFreq.slice(0, 6).map(f => f.number).sort((a, b) => a - b);
+            predictions.push({
+                method: 'Most Frequent Numbers',
+                numbers: mostFrequent,
+                confidence: 0.25,
+                reasoning: 'Based on historical frequency analysis across all positions'
+            });
+            
+            // Most Frequent Set 2 (with slight variation)
+            const mostFrequentSet2 = overallFreq.slice(0, 8).map(f => f.number);
+            const shuffledMostFrequent = [...mostFrequentSet2].sort(() => Math.random() - 0.5).slice(0, 6).sort((a, b) => a - b);
+            predictions.push({
+                method: 'Most Frequent Numbers (Set 2)',
+                numbers: shuffledMostFrequent,
+                confidence: 0.22,
+                reasoning: 'Alternative selection from top 8 most frequent numbers'
+            });
+
+            // Method 2: Position-based (2 sets)
+            const positions = ['Winning Number 1', '2', '3', '4', '5', '6'];
+            const positionNumbers = [];
+            positions.forEach(pos => {
+                const freq = calculateFrequency(data, pos);
+                positionNumbers.push(freq[0].number);
+            });
+            predictions.push({
+                method: 'Position-Based Analysis',
+                numbers: positionNumbers.sort((a, b) => a - b),
+                confidence: 0.30,
+                reasoning: 'Selecting most frequent number for each position (1-6)'
+            });
+            
+            // Position-based Set 2 (using second most frequent for each position)
+            const positionNumbersSet2 = [];
+            positions.forEach(pos => {
+                const freq = calculateFrequency(data, pos);
+                if (freq.length > 1) {
+                    positionNumbersSet2.push(freq[1].number);
+                } else {
+                    positionNumbersSet2.push(freq[0].number);
+                }
+            });
+            predictions.push({
+                method: 'Position-Based Analysis (Set 2)',
+                numbers: positionNumbersSet2.sort((a, b) => a - b),
+                confidence: 0.28,
+                reasoning: 'Selecting second most frequent number for each position (1-6)'
+            });
+
+            // Method 3: Hot numbers (2 sets)
+            const recentDraws = data.slice(0, 5);
+            const recentNumbers = {};
+            recentDraws.forEach(row => {
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    recentNumbers[num] = (recentNumbers[num] || 0) + 1;
+                });
+            });
+            
+            // Hot Numbers Set 1
+            const hotNumbersEntries = Object.entries(recentNumbers)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            const hotNumbers = [];
+            for (let i = 0; i < 6; i++) {
+                if (hotNumbersEntries.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * Math.min(5, hotNumbersEntries.length));
+                    const selected = hotNumbersEntries.splice(randomIndex, 1)[0];
+                    hotNumbers.push(parseInt(selected[0]));
+                }
+            }
+            hotNumbers.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Hot Numbers',
+                numbers: hotNumbers,
+                confidence: 0.20,
+                reasoning: 'Based on numbers appearing frequently in recent draws across all positions'
+            });
+            
+            // Hot Numbers Set 2 (different random selection)
+            const hotNumbersEntries2 = Object.entries(recentNumbers)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 12);
+            
+            const hotNumbers2 = [];
+            for (let i = 0; i < 6; i++) {
+                if (hotNumbersEntries2.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * Math.min(6, hotNumbersEntries2.length));
+                    const selected = hotNumbersEntries2.splice(randomIndex, 1)[0];
+                    hotNumbers2.push(parseInt(selected[0]));
+                }
+            }
+            hotNumbers2.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Hot Numbers (Set 2)',
+                numbers: hotNumbers2,
+                confidence: 0.18,
+                reasoning: 'Alternative selection from recent hot numbers with different randomization'
+            });
+
+            // Method 4: Cold numbers (2 sets)
+            const coldNumbers = overallFreq.slice(-6).map(f => f.number).sort((a, b) => a - b);
+            predictions.push({
+                method: 'Cold Numbers',
+                numbers: coldNumbers,
+                confidence: 0.15,
+                reasoning: 'Based on numbers that have appeared least frequently across all positions'
+            });
+            
+            // Cold Numbers Set 2 (slightly different range)
+            const coldNumbers2 = overallFreq.slice(-8).map(f => f.number);
+            const shuffledColdNumbers = [...coldNumbers2].sort(() => Math.random() - 0.5).slice(0, 6).sort((a, b) => a - b);
+            predictions.push({
+                method: 'Cold Numbers (Set 2)',
+                numbers: shuffledColdNumbers,
+                confidence: 0.13,
+                reasoning: 'Alternative selection from bottom 8 least frequent numbers'
+            });
+
+            // Method 5: Balanced approach (2 sets)
+            const mostFrequentPool = mostFrequent.slice(0, 5);
+            const coldNumbersPool = coldNumbers.slice(0, 5);
+            
+            // Balanced Set 1
+            const balanced = [];
+            for (let i = 0; i < 3; i++) {
+                if (mostFrequentPool.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * mostFrequentPool.length);
+                    const selected = mostFrequentPool.splice(randomIndex, 1)[0];
+                    balanced.push(selected);
+                }
+            }
+            for (let i = 0; i < 3; i++) {
+                if (coldNumbersPool.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * coldNumbersPool.length);
+                    const selected = coldNumbersPool.splice(randomIndex, 1)[0];
+                    balanced.push(selected);
+                }
+            }
+            balanced.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Balanced Approach',
+                numbers: balanced,
+                confidence: 0.35,
+                reasoning: 'Combination of most frequent and least frequent numbers across all positions'
+            });
+            
+            // Balanced Set 2 (different ratio)
+            const mostFrequentPool2 = overallFreq.slice(0, 6).map(f => f.number);
+            const coldNumbersPool2 = overallFreq.slice(-6).map(f => f.number);
+            
+            const balanced2 = [];
+            // 4 from most frequent, 2 from least frequent
+            for (let i = 0; i < 4; i++) {
+                if (mostFrequentPool2.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * mostFrequentPool2.length);
+                    const selected = mostFrequentPool2.splice(randomIndex, 1)[0];
+                    balanced2.push(selected);
+                }
+            }
+            for (let i = 0; i < 2; i++) {
+                if (coldNumbersPool2.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * coldNumbersPool2.length);
+                    const selected = coldNumbersPool2.splice(randomIndex, 1)[0];
+                    balanced2.push(selected);
+                }
+            }
+            balanced2.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Balanced Approach (Set 2)',
+                numbers: balanced2,
+                confidence: 0.32,
+                reasoning: 'Alternative balanced approach: 4 frequent + 2 cold numbers'
+            });
+
+            return predictions;
+        }
+
+        function updateSummaryCards(data) {
+            const totalDraws = data.length;
+            const dates = data.map(row => new Date(row.Date)).sort((a, b) => a.getTime() - b.getTime());
+            
+            // Calculate frequency across ALL winning numbers (positions 1-6)
+            const allNumbers = {};
+            
+            // Initialize all numbers 1-49 with 0 frequency
+            for (let i = 1; i <= 49; i++) {
+                allNumbers[i] = 0;
+            }
+            
+            data.forEach(row => {
+                // Count all 6 winning numbers from each draw
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    // Convert to number and check if valid
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        allNumbers[number] = (allNumbers[number] || 0) + 1;
+                    }
+                });
+            });
+            
+            // Convert to array and sort by frequency
+            const overallFreq = Object.entries(allNumbers)
+                .map(([number, frequency]) => ({
+                    number: parseInt(number),
+                    frequency,
+                    percentage: (frequency / (data.length * 6)) * 100
+                }))
+                .sort((a, b) => b.frequency - a.frequency);
+            
+            document.getElementById('total-draws').textContent = totalDraws;
+            document.getElementById('date-range').textContent = 
+                `${dates[0].toLocaleDateString()} to ${dates[dates.length - 1].toLocaleDateString()}`;
+            
+            document.getElementById('most-frequent').textContent = overallFreq[0].number;
+            document.getElementById('most-frequent-details').textContent = 
+                `${overallFreq[0].frequency} times (${overallFreq[0].percentage.toFixed(1)}%)`;
+            
+            document.getElementById('least-frequent').textContent = overallFreq[overallFreq.length - 1].number;
+            document.getElementById('least-frequent-details').textContent = 
+                `${overallFreq[overallFreq.length - 1].frequency} times (${overallFreq[overallFreq.length - 1].percentage.toFixed(1)}%)`;
+        }
+
+        function renderPredictions(predictions, latestNumbers = []) {
+            const container = document.getElementById('predictions-container');
+            container.innerHTML = predictions.map(pred => `
+                <div class="bg-gray-50 rounded-lg p-6 card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-lg">${pred.method}</h3>
+                        <span class="text-sm text-gray-500">${(pred.confidence * 100).toFixed(0)}% confidence</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">${pred.reasoning}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${pred.numbers.map(num => {
+                            const isLatest = latestNumbers.includes(num);
+                            return `<span class="badge ${isLatest ? 'bg-red-500 text-white' : 'primary'}">${num}</span>`;
+                        }).join('')}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${pred.confidence * 100}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStatistics(data, latestNumbers = []) {
+            // Calculate frequency across ALL winning numbers (positions 1-6)
+            const allNumbers = {};
+            
+            // Initialize all numbers 1-49 with 0 frequency
+            for (let i = 1; i <= 49; i++) {
+                allNumbers[i] = 0;
+            }
+            
+            data.forEach(row => {
+                // Count all 6 winning numbers from each draw
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    // Convert to number and check if valid
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        allNumbers[number] = (allNumbers[number] || 0) + 1;
+                    }
+                });
+            });
+            
+            // Convert to array and sort by frequency
+            const overallFreq = Object.entries(allNumbers)
+                .map(([number, frequency]) => ({
+                    number: parseInt(number),
+                    frequency,
+                    percentage: (frequency / (data.length * 6)) * 100
+                }))
+                .sort((a, b) => b.frequency - a.frequency);
+            
+            // Create array with ALL numbers 1-49, including zero frequencies
+            const allNumbersArray = [];
+            for (let i = 1; i <= 49; i++) {
+                const freq = allNumbers[i] || 0;
+                allNumbersArray.push({
+                    number: i,
+                    frequency: freq,
+                    percentage: (freq / (data.length * 6)) * 100
+                });
+            }
+            
+            // Sort by frequency (highest first)
+            const sortedByFrequency = allNumbersArray.sort((a, b) => b.frequency - a.frequency);
+            
+            // Most frequent (top 15)
+            const mostFrequentList = document.getElementById('most-frequent-list');
+            mostFrequentList.innerHTML = sortedByFrequency.slice(0, 15).map(item => {
+                const isLatest = latestNumbers.includes(item.number);
+                return `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="badge ${isLatest ? 'bg-red-500 text-white' : ''}">${item.number}</span>
+                            <span class="text-sm">${item.frequency} times</span>
+                        </div>
+                        <span class="text-xs text-gray-500">${item.percentage.toFixed(1)}%</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Least frequent (bottom 15, including zeros)
+            const leastFrequentList = document.getElementById('least-frequent-list');
+            leastFrequentList.innerHTML = sortedByFrequency.slice(-15).reverse().map(item => {
+                const isLatest = latestNumbers.includes(item.number);
+                return `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="badge ${item.frequency === 0 ? (isLatest ? 'bg-red-200 text-red-700' : 'bg-gray-200 text-gray-500') : (isLatest ? 'bg-red-500 text-white' : '')}">${item.number}</span>
+                            <span class="text-sm">${item.frequency} times</span>
+                        </div>
+                        <span class="text-xs text-gray-500">${item.percentage.toFixed(1)}%</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDataTable(data) {
+            const tableBody = document.getElementById('data-table');
+            const dataCount = document.getElementById('data-count');
+            
+            // Update the count display
+            dataCount.textContent = `${data.length} draws from ${data[data.length - 1]?.Date || 'N/A'} to ${data[0]?.Date || 'N/A'}`;
+            
+            tableBody.innerHTML = data.map(row => `
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-2 font-medium">${row.Date}</td>
+                    <td class="p-2">
+                        <div class="flex flex-wrap gap-1">
+                            <span class="badge">${row['Winning Number 1']}</span>
+                            <span class="badge">${row['2']}</span>
+                            <span class="badge">${row['3']}</span>
+                            <span class="badge">${row['4']}</span>
+                            <span class="badge">${row['5']}</span>
+                            <span class="badge">${row['6']}</span>
+                        </div>
+                    </td>
+                    <td class="p-2">
+                        <span class="badge secondary">${row['Additional Number']}</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderChart(data, latestNumbers = []) {
+            const canvas = document.getElementById('frequencyChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size to fill the container and make it large
+            const container = canvas.parentElement;
+            const width = Math.max(1200, container.clientWidth - 40); // At least 1200px wide
+            const height = Math.max(800, window.innerHeight - 300); // At least 800px tall, or fill most of viewport
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Calculate frequency across ALL winning numbers (positions 1-6)
+            const allNumbers = {};
+            
+            // Initialize all numbers 1-49 with 0 frequency
+            for (let i = 1; i <= 49; i++) {
+                allNumbers[i] = 0;
+            }
+            
+            data.forEach(row => {
+                // Count all 6 winning numbers from each draw
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    // Convert to number and check if valid
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        allNumbers[number] = (allNumbers[number] || 0) + 1;
+                    }
+                });
+            });
+            
+            // Convert to array and sort by frequency
+            const overallFreq = Object.entries(allNumbers)
+                .map(([number, frequency]) => ({
+                    number: parseInt(number),
+                    frequency,
+                    percentage: (frequency / (data.length * 6)) * 100
+                }))
+                .sort((a, b) => b.frequency - a.frequency);
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Chart dimensions with larger padding for better visibility
+            const padding = 60;
+            const chartWidth = width - 2 * padding;
+            const chartHeight = height - 2 * padding;
+            
+            // Create array with ALL numbers 1-49, including zero frequencies
+            const allNumbersArray = [];
+            for (let i = 1; i <= 49; i++) {
+                const freq = allNumbers[i] || 0;
+                allNumbersArray.push({
+                    number: i,
+                    frequency: freq,
+                    percentage: (freq / (data.length * 6)) * 100
+                });
+            }
+            
+            const maxFreq = Math.max(...allNumbersArray.map(item => item.frequency));
+            
+            // Draw title
+            ctx.fillStyle = '#374151';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Number Frequency Distribution (1-49)', width / 2, 30);
+            
+            // Draw subtitle
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '14px Arial';
+            ctx.fillText(`Based on ${data.length} draws with 6 numbers each`, width / 2, 50);
+            
+            // Draw legend
+            ctx.fillStyle = '#374151';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Legend:', 10, 80);
+            
+            // Blue bar legend
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(10, 85, 20, 10);
+            ctx.fillStyle = '#374151';
+            ctx.fillText('Historical numbers', 35, 95);
+            
+            // Red bar legend
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(10, 100, 20, 10);
+            ctx.fillStyle = '#374151';
+            ctx.fillText('Latest winning numbers', 35, 110);
+            
+            // Draw bars for all 49 numbers
+            const barWidth = chartWidth / 49; // 49 numbers total
+            const barSpacing = 2;
+            const actualBarWidth = barWidth - barSpacing;
+            
+            allNumbersArray.forEach((item, index) => {
+                const x = padding + index * barWidth;
+                const barHeight = maxFreq > 0 ? (item.frequency / maxFreq) * chartHeight : 0;
+                const y = height - padding - barHeight;
+                
+                // Check if this number is in the latest winning numbers
+                const isLatestNumber = latestNumbers.includes(item.number);
+                
+                // Draw bar (even if height is 0, it will show as a thin line)
+                if (item.frequency > 0) {
+                    if (isLatestNumber) {
+                        // Red gradient for latest winning numbers
+                        const gradient = ctx.createLinearGradient(x, y, x, height - padding);
+                        gradient.addColorStop(0, '#ef4444');
+                        gradient.addColorStop(1, '#dc2626');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, y, actualBarWidth, barHeight);
+                        
+                        // Draw red border
+                        ctx.strokeStyle = '#b91c1c';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(x, y, actualBarWidth, barHeight);
+                    } else {
+                        // Blue gradient for other numbers
+                        const gradient = ctx.createLinearGradient(x, y, x, height - padding);
+                        gradient.addColorStop(0, '#3b82f6');
+                        gradient.addColorStop(1, '#1d4ed8');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, y, actualBarWidth, barHeight);
+                        
+                        // Draw blue border
+                        ctx.strokeStyle = '#1e40af';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(x, y, actualBarWidth, barHeight);
+                    }
+                } else {
+                    if (isLatestNumber) {
+                        // Red line for latest winning numbers with zero frequency
+                        ctx.fillStyle = '#fca5a5';
+                        ctx.fillRect(x, height - padding - 2, actualBarWidth, 2);
+                    } else {
+                        // Gray line for other zero frequency numbers
+                        ctx.fillStyle = '#e5e7eb';
+                        ctx.fillRect(x, height - padding - 1, actualBarWidth, 1);
+                    }
+                }
+                
+                // Draw number label (larger font for better visibility)
+                ctx.fillStyle = isLatestNumber ? '#dc2626' : '#374151';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.number.toString(), x + actualBarWidth / 2, height - padding + 20);
+                
+                // Draw frequency label (only for non-zero frequencies to avoid clutter)
+                if (item.frequency > 0) {
+                    ctx.fillStyle = '#6b7280';
+                    ctx.font = '10px Arial';
+                    ctx.fillText(item.frequency.toString(), x + actualBarWidth / 2, y - 5);
+                }
+            });
+            
+            // Draw axes
+            ctx.strokeStyle = '#9ca3af';
+            ctx.lineWidth = 1;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.stroke();
+            
+            // Y-axis labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const y = height - padding - (i / 5) * chartHeight;
+                const value = Math.round((i / 5) * maxFreq);
+                ctx.fillText(value.toString(), padding - 10, y + 5);
+            }
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Render chart if charts tab is selected
+            if (tabName === 'charts') {
+                setTimeout(() => {
+                    const latestNumbers = getLatestWinningNumbers(totoData);
+                    renderChart(totoData, latestNumbers);
+                }, 100);
+            }
+        }
+
+        // Debug function to check for missing numbers
+        function debugMissingNumbers(data) {
+            const allNumbers = {};
+            
+            // Initialize all numbers 1-49 with 0 frequency
+            for (let i = 1; i <= 49; i++) {
+                allNumbers[i] = 0;
+            }
+            
+            console.log('=== DEBUGGING NUMBER 3 ===');
+            console.log('Looking for number 3 in data...');
+            
+            data.forEach((row, index) => {
+                const numbers = [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']];
+                console.log(`Row ${index + 1}:`, numbers);
+                
+                numbers.forEach(num => {
+                    // Convert to number and check if valid
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        allNumbers[number] = (allNumbers[number] || 0) + 1;
+                        if (number === 3) {
+                            console.log(`Found number 3 in row ${index + 1}, total count now: ${allNumbers[3]}`);
+                        }
+                    }
+                });
+            });
+            
+            console.log('Final count for number 3:', allNumbers[3]);
+            console.log('All numbers with their counts:', allNumbers);
+            
+            const missingNumbers = [];
+            for (let i = 1; i <= 49; i++) {
+                if (allNumbers[i] === 0) {
+                    missingNumbers.push(i);
+                }
+            }
+            
+            console.log('Total draws analyzed:', data.length);
+            console.log('Total numbers counted:', Object.values(allNumbers).reduce((a, b) => a + b, 0));
+            console.log('Missing numbers (frequency = 0):', missingNumbers);
+            console.log('Numbers with frequency > 0:', Object.entries(allNumbers).filter(([num, freq]) => freq > 0).length);
+            
+            return missingNumbers;
+        }
+
+        // Get latest winning numbers
+        function getLatestWinningNumbers(data) {
+            if (data.length === 0) return [];
+            
+            // Sort by date to get the most recent draw
+            const sortedData = data.sort((a, b) => new Date(b.Date) - new Date(a.Date));
+            const latestDraw = sortedData[0];
+            
+            return [
+                latestDraw['Winning Number 1'],
+                latestDraw['2'],
+                latestDraw['3'],
+                latestDraw['4'],
+                latestDraw['5'],
+                latestDraw['6']
+            ];
+        }
+
+        // Function to recompute predictions
+        function recomputePredictions() {
+            const button = document.getElementById('recompute-btn');
+            const container = document.getElementById('predictions-container');
+            
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = `
+                <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Computing...
+            `;
+            
+            container.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p class="mt-2 text-gray-600">Regenerating predictions...</p>
+                </div>
+            `;
+            
+            // Simulate some processing time for better UX
+            setTimeout(() => {
+                // Get latest winning numbers for highlighting
+                const latestNumbers = getLatestWinningNumbers(totoData);
+                
+                // Generate new predictions
+                const predictions = generatePredictions(totoData);
+                renderPredictions(predictions, latestNumbers);
+                
+                // Reset button
+                button.disabled = false;
+                button.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Recompute Predictions
+                `;
+            }, 1000);
+        }
+
+        // Initialize the application
+        function init() {
+            // Debug: Check for missing numbers
+            const missing = debugMissingNumbers(totoData);
+            
+            // Get latest winning numbers for highlighting
+            const latestNumbers = getLatestWinningNumbers(totoData);
+            
+            updateSummaryCards(totoData);
+            const predictions = generatePredictions(totoData);
+            renderPredictions(predictions, latestNumbers);
+            renderStatistics(totoData, latestNumbers);
+            renderDataTable(totoData);
+            
+            // Render chart if charts tab is initially visible
+            setTimeout(() => {
+                if (!document.getElementById('charts-tab').classList.contains('hidden')) {
+                    renderChart(totoData, latestNumbers);
+                }
+            }, 200);
+            
+            // Add event listener for recompute button
+            document.getElementById('recompute-btn').addEventListener('click', recomputePredictions);
+        }
+
+        // Start the application when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,28 @@
+TOTO ANALYSIS REPORT
+==================================================
+Generated: 2025-07-29 23:52:30
+Data draws: 50
+
+MOST FREQUENT NUMBERS:
+  17: 12 times
+  10: 11 times
+  42: 11 times
+  49: 10 times
+  21: 9 times
+  16: 9 times
+  19: 9 times
+  39: 9 times
+  34: 9 times
+  40: 9 times
+
+LEAST FREQUENT NUMBERS:
+  1: 7 times
+  2: 8 times
+  3: 6 times
+  4: 1 times
+  5: 8 times
+  6: 3 times
+  7: 8 times
+  8: 7 times
+  9: 7 times
+  10: 11 times
