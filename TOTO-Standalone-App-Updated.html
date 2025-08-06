@@ -138,8 +138,8 @@
                     <h3 class="text-sm font-medium text-gray-600">Prediction Methods</h3>
                     <span class="text-gray-400">🎯</span>
                 </div>
-                <div class="text-2xl font-bold text-gray-900">5</div>
-                <p class="text-xs text-gray-500">Advanced algorithms</p>
+                <div class="text-2xl font-bold text-gray-900">7</div>
+                <p class="text-xs text-gray-500">Advanced chronological algorithms</p>
             </div>
         </div>
 
@@ -197,6 +197,19 @@
             <div id="charts-tab" class="tab-content hidden">
                 <div class="bg-gray-50 rounded-lg p-4">
                     <h3 class="font-semibold mb-4">Frequency Distribution</h3>
+                    
+                    <!-- Prediction Method Filters -->
+                    <div class="mb-6 bg-white rounded-lg p-4 shadow-sm">
+                        <h4 class="font-medium mb-3 text-gray-700">Show Prediction Methods:</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="prediction-checkboxes">
+                            <!-- Checkboxes will be dynamically generated here -->
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                            <button id="select-all-predictions" class="text-sm text-blue-600 hover:text-blue-800 mr-4">Select All</button>
+                            <button id="clear-all-predictions" class="text-sm text-gray-600 hover:text-gray-800">Clear All</button>
+                        </div>
+                    </div>
+
                     <div id="chart-container" class="w-full" style="min-height: 800px;">
                         <canvas id="frequencyChart" style="width: 100%; max-width: 1400px; height: auto;"></canvas>
                     </div>
@@ -516,6 +529,163 @@
                 reasoning: 'Alternative balanced approach: 4 frequent + 2 cold numbers'
             });
 
+            // Method 6: Chronological Trend Analysis (Bottom-Up)
+            const chronoTrendNumbers = [];
+            
+            // Sort data chronologically (oldest first) for trend analysis
+            const chronoData = [...data].sort((a, b) => new Date(a.Date) - new Date(b.Date));
+            const trendWindow = 10; // Analyze trends in windows of 10 draws
+            
+            // Track number appearance trends over time
+            const numberTrends = {};
+            for (let i = 1; i <= 49; i++) {
+                numberTrends[i] = { appearing: 0, disappearing: 0, trend: 0 };
+            }
+            
+            // Analyze trends in sliding windows
+            for (let windowStart = 0; windowStart <= chronoData.length - trendWindow * 2; windowStart += trendWindow) {
+                const earlyWindow = chronoData.slice(windowStart, windowStart + trendWindow);
+                const lateWindow = chronoData.slice(windowStart + trendWindow, windowStart + trendWindow * 2);
+                
+                // Count appearances in each window
+                const earlyCount = {};
+                const lateCount = {};
+                
+                for (let i = 1; i <= 49; i++) {
+                    earlyCount[i] = 0;
+                    lateCount[i] = 0;
+                }
+                
+                earlyWindow.forEach(row => {
+                    [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                        const number = parseInt(num);
+                        if (!isNaN(number) && number >= 1 && number <= 49) {
+                            earlyCount[number]++;
+                        }
+                    });
+                });
+                
+                lateWindow.forEach(row => {
+                    [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                        const number = parseInt(num);
+                        if (!isNaN(number) && number >= 1 && number <= 49) {
+                            lateCount[number]++;
+                        }
+                    });
+                });
+                
+                // Calculate trend for each number
+                for (let i = 1; i <= 49; i++) {
+                    const trendValue = lateCount[i] - earlyCount[i];
+                    numberTrends[i].trend += trendValue;
+                    if (trendValue > 0) numberTrends[i].appearing++;
+                    if (trendValue < 0) numberTrends[i].disappearing++;
+                }
+            }
+            
+            // Select numbers with strongest positive trends
+            const trendingUp = Object.entries(numberTrends)
+                .map(([num, trend]) => ({
+                    number: parseInt(num),
+                    trendScore: trend.trend + (trend.appearing * 0.5) - (trend.disappearing * 0.3),
+                    overallFreq: allNumbers[parseInt(num)] || 0
+                }))
+                .sort((a, b) => b.trendScore - a.trendScore)
+                .slice(0, 8); // Get top 8 trending numbers
+            
+            // Select 6 numbers combining trend and frequency
+            for (let i = 0; i < 6 && i < trendingUp.length; i++) {
+                chronoTrendNumbers.push(trendingUp[i].number);
+            }
+            
+            // Fill remaining slots with recent frequency if needed
+            while (chronoTrendNumbers.length < 6) {
+                const recentFreq = calculateFrequency(data.slice(0, 5), 'Winning Number 1');
+                for (const freq of recentFreq) {
+                    if (!chronoTrendNumbers.includes(freq.number) && chronoTrendNumbers.length < 6) {
+                        chronoTrendNumbers.push(freq.number);
+                    }
+                }
+            }
+            
+            chronoTrendNumbers.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Chronological Trend Analysis',
+                numbers: chronoTrendNumbers.slice(0, 6),
+                confidence: 0.33,
+                reasoning: 'Bottom-up chronological analysis of number appearance trends over time'
+            });
+
+            // Method 7: Cyclical Pattern Analysis
+            const cyclicalNumbers = [];
+            
+            // Analyze cyclical patterns in the complete dataset (oldest to newest)
+            const fullChronoData = [...data].sort((a, b) => new Date(a.Date) - new Date(b.Date));
+            const cycleLength = 7; // Weekly cycle analysis
+            
+            // Track number appearances by cycle position
+            const cyclePatterns = {};
+            for (let i = 1; i <= 49; i++) {
+                cyclePatterns[i] = new Array(cycleLength).fill(0);
+            }
+            
+            fullChronoData.forEach((row, index) => {
+                const cyclePosition = index % cycleLength;
+                [row['Winning Number 1'], row['2'], row['3'], row['4'], row['5'], row['6']].forEach(num => {
+                    const number = parseInt(num);
+                    if (!isNaN(number) && number >= 1 && number <= 49) {
+                        cyclePatterns[number][cyclePosition]++;
+                    }
+                });
+            });
+            
+            // Determine current cycle position based on latest data
+            const currentCyclePos = (fullChronoData.length - 1) % cycleLength;
+            const nextCyclePos = (currentCyclePos + 1) % cycleLength;
+            
+            // Find numbers that perform well at the predicted next cycle position
+            const cyclicalScores = Object.entries(cyclePatterns)
+                .map(([num, cycles]) => ({
+                    number: parseInt(num),
+                    cyclicalScore: cycles[nextCyclePos],
+                    consistency: cycles.reduce((sum, count) => sum + (count > 0 ? 1 : 0), 0), // How many cycle positions it appears in
+                    totalAppearances: cycles.reduce((sum, count) => sum + count, 0)
+                }))
+                .filter(item => item.cyclicalScore > 0) // Only numbers that appear in target cycle position
+                .sort((a, b) => {
+                    // Primary sort: cyclical score for next position
+                    // Secondary sort: consistency across cycles
+                    if (b.cyclicalScore !== a.cyclicalScore) {
+                        return b.cyclicalScore - a.cyclicalScore;
+                    }
+                    return b.consistency - a.consistency;
+                });
+            
+            // Select top 6 cyclical performers
+            for (let i = 0; i < 6 && i < cyclicalScores.length; i++) {
+                cyclicalNumbers.push(cyclicalScores[i].number);
+            }
+            
+            // Fill remaining slots with numbers showing strong cyclical patterns
+            if (cyclicalNumbers.length < 6) {
+                const backupNumbers = cyclicalScores.slice(6, 15).map(item => item.number);
+                while (cyclicalNumbers.length < 6 && backupNumbers.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * backupNumbers.length);
+                    const selected = backupNumbers.splice(randomIndex, 1)[0];
+                    if (!cyclicalNumbers.includes(selected)) {
+                        cyclicalNumbers.push(selected);
+                    }
+                }
+            }
+            
+            cyclicalNumbers.sort((a, b) => a - b);
+            predictions.push({
+                method: 'Cyclical Pattern Analysis',
+                numbers: cyclicalNumbers.slice(0, 6),
+                confidence: 0.31,
+                reasoning: `Cyclical pattern analysis (7-day cycle, next position: ${nextCyclePos + 1})`
+            });
+
             return predictions;
         }
 
@@ -597,7 +767,9 @@
             'Cold Numbers': { bg: '#8b5cf6', text: 'white', border: '#7c3aed' }, // Purple
             'Cold Numbers (Set 2)': { bg: '#7c3aed', text: 'white', border: '#6d28d9' }, // Darker Purple
             'Balanced Approach': { bg: '#ef4444', text: 'white', border: '#dc2626' }, // Red
-            'Balanced Approach (Set 2)': { bg: '#dc2626', text: 'white', border: '#b91c1c' } // Darker Red
+            'Balanced Approach (Set 2)': { bg: '#dc2626', text: 'white', border: '#b91c1c' }, // Darker Red
+            'Chronological Trend Analysis': { bg: '#06b6d4', text: 'white', border: '#0891b2' }, // Sky Blue
+            'Cyclical Pattern Analysis': { bg: '#84cc16', text: 'white', border: '#65a30d' } // Lime Green
         };
 
         // Function to get color for a number based on predictions
@@ -739,6 +911,53 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        // Generate prediction method checkboxes
+        function generatePredictionCheckboxes(predictions = []) {
+            const checkboxContainer = document.getElementById('prediction-checkboxes');
+            if (!checkboxContainer) return;
+
+            checkboxContainer.innerHTML = '';
+            
+            predictions.forEach((prediction, index) => {
+                const checkboxId = `prediction-${index}`;
+                const color = predictionColors[prediction.method] || { bg: '#6b7280' };
+                
+                const checkboxHtml = `
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" 
+                               id="${checkboxId}" 
+                               class="prediction-checkbox rounded text-blue-600 focus:ring-blue-500" 
+                               data-method="${prediction.method}"
+                               onchange="updateChartDisplay()">
+                        <label for="${checkboxId}" class="text-sm cursor-pointer flex items-center space-x-2">
+                            <span class="w-4 h-4 rounded" style="background-color: ${color.bg}; border: 1px solid ${color.border};"></span>
+                            <span class="text-gray-700">${prediction.method}</span>
+                        </label>
+                    </div>
+                `;
+                checkboxContainer.innerHTML += checkboxHtml;
+            });
+        }
+
+        // Get selected prediction methods
+        function getSelectedPredictions(allPredictions = []) {
+            const selectedMethods = Array.from(document.querySelectorAll('.prediction-checkbox:checked'))
+                .map(checkbox => checkbox.dataset.method);
+            
+            return allPredictions.filter(pred => selectedMethods.includes(pred.method));
+        }
+
+        // Update chart display based on selections
+        function updateChartDisplay() {
+            const chartsTab = document.getElementById('charts-tab');
+            if (!chartsTab.classList.contains('hidden')) {
+                const allPredictions = generatePredictions(totoData);
+                const selectedPredictions = getSelectedPredictions(allPredictions);
+                const latestNumbers = getLatestWinningNumbers(totoData);
+                renderChart(totoData, latestNumbers, selectedPredictions);
+            }
         }
 
         function renderChart(data, latestNumbers = [], predictions = []) {
@@ -916,9 +1135,9 @@
                     }
                 }
                 
-                // Draw number label (larger font for better visibility)
-                ctx.fillStyle = isLatestNumber ? '#dc2626' : (predictions.some(pred => pred.numbers.includes(item.number)) ? color.text : '#374151');
-                ctx.font = '12px Arial';
+                // Draw number label (clean text only)
+                ctx.fillStyle = isLatestNumber ? '#dc2626' : (predictions.some(pred => pred.numbers.includes(item.number)) ? color.text : '#000000');
+                ctx.font = 'bold 11px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText(item.number.toString(), x + actualBarWidth / 2, height - padding + 20);
                 
@@ -978,8 +1197,13 @@
             if (tabName === 'charts') {
                 setTimeout(() => {
                     const latestNumbers = getLatestWinningNumbers(totoData);
-                    const predictions = generatePredictions(totoData);
-                    renderChart(totoData, latestNumbers, predictions);
+                    const allPredictions = generatePredictions(totoData);
+                    
+                    // Generate checkboxes for prediction methods
+                    generatePredictionCheckboxes(allPredictions);
+                    
+                    // Initially render chart with no predictions selected (only latest numbers in red)
+                    renderChart(totoData, latestNumbers, []);
                 }, 100);
             }
         }
@@ -1122,8 +1346,29 @@
             
             // Add event listener for recompute button
             document.getElementById('recompute-btn').addEventListener('click', recomputePredictions);
+            
+            // Add event listeners for chart prediction controls
+            document.getElementById('select-all-predictions').addEventListener('click', () => {
+                document.querySelectorAll('.prediction-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                updateChartDisplay();
+            });
+            
+            document.getElementById('clear-all-predictions').addEventListener('click', () => {
+                document.querySelectorAll('.prediction-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateChartDisplay();
+            });
         }
 
+        // Add a helpful note about data sources
+        console.log('🎯 TOTO Analysis App - Standalone Version');
+        console.log('📊 This app includes embedded historical TOTO data');
+        console.log('💡 For latest results, check Singapore Pools official website');
+        console.log('⚡ App is fully functional with offline data');
+        
         // Start the application when page loads
         document.addEventListener('DOMContentLoaded', init);
     </script>
