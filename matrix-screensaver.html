@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Matrix Screensaver">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMDAwMDAwIi8+Cjx0ZXh0IHg9Ijk2IiB5PSIxMDAiIGZvbnQtZmFtaWx5PSJDb3VyaWVyIE5ldyIgbW9ub3NwYWNlIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IiMwMGZmMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk08L3RleHQ+Cjwvc3ZnPgo=">
+    <title>Matrix Screensaver - iPhone 15 Pro Max</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(0, 255, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 0, 0.4);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 255, 0, 0.6);
+        }
+
+        .settings-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            color: #00ff00;
+            font-size: 12px;
+            min-width: 200px;
+            display: none;
+        }
+
+        .settings-panel.show {
+            display: block;
+        }
+
+        .setting-item {
+            margin-bottom: 10px;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .setting-item input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .setting-item input[type="color"] {
+            width: 30px;
+            height: 20px;
+            border: none;
+            border-radius: 3px;
+        }
+
+        .setting-value {
+            font-size: 10px;
+            color: #888;
+        }
+
+        .wake-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00ff00;
+            font-size: 14px;
+            text-align: center;
+            z-index: 10;
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* iPhone 15 Pro Max specific optimizations */
+        @media screen and (device-width: 430px) and (device-height: 932px) {
+            .controls {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .control-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .settings-panel {
+                top: 15px;
+                left: 15px;
+                padding: 12px;
+                font-size: 11px;
+            }
+            
+            .wake-indicator {
+                bottom: 25px;
+                font-size: 13px;
+            }
+        }
+
+        /* Landscape mode adjustments */
+        @media screen and (orientation: landscape) {
+            .controls {
+                top: 10px;
+                right: 10px;
+                flex-direction: row;
+            }
+            
+            .settings-panel {
+                top: 10px;
+                left: 10px;
+            }
+            
+            .wake-indicator {
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    
+    <div class="controls">
+        <button class="control-btn" id="pause-btn">⏸️ Pause</button>
+        <button class="control-btn" id="settings-btn">⚙️ Settings</button>
+        <button class="control-btn" id="fullscreen-btn">⛶ Fullscreen</button>
+    </div>
+
+    <div class="settings-panel" id="settings-panel">
+        <h3 style="margin-bottom: 15px; text-align: center;">Matrix Settings</h3>
+        
+        <div class="setting-item">
+            <label>Speed:</label>
+            <input type="range" id="speed-slider" min="1" max="10" value="5">
+            <div class="setting-value" id="speed-value">5</div>
+        </div>
+        
+        <div class="setting-item">
+            <label>Density:</label>
+            <input type="range" id="density-slider" min="10" max="100" value="50">
+            <div class="setting-value" id="density-value">50</div>
+        </div>
+        
+        <div class="setting-item">
+            <label>Character Size:</label>
+            <input type="range" id="size-slider" min="8" max="24" value="14">
+            <div class="setting-value" id="size-value">14</div>
+        </div>
+        
+        <div class="setting-item">
+            <label>Color:</label>
+            <input type="color" id="color-picker" value="#00ff00">
+        </div>
+        
+        <div class="setting-item">
+            <label>Fade Speed:</label>
+            <input type="range" id="fade-slider" min="1" max="20" value="10">
+            <div class="setting-value" id="fade-value">10</div>
+        </div>
+        
+        <div class="setting-item">
+            <label>Glitch Effect:</label>
+            <input type="checkbox" id="glitch-checkbox" checked>
+        </div>
+    </div>
+
+    <div class="wake-indicator">
+        Tap to wake • Matrix Screensaver
+    </div>
+
+    <script>
+        class MatrixScreensaver {
+            constructor() {
+                this.canvas = document.getElementById('matrix-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.isPaused = false;
+                this.animationId = null;
+                
+                // Matrix characters
+                this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
+                this.drops = [];
+                
+                // Settings
+                this.settings = {
+                    speed: 5,
+                    density: 50,
+                    charSize: 14,
+                    color: '#00ff00',
+                    fadeSpeed: 10,
+                    glitch: true
+                };
+                
+                this.init();
+                this.setupEventListeners();
+                this.resizeCanvas();
+                this.start();
+            }
+
+            init() {
+                this.resizeCanvas();
+                this.initializeDrops();
+            }
+
+            resizeCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                // Adjust for iPhone 15 Pro Max safe areas
+                const safeAreaTop = window.safeAreaInsets?.top || 0;
+                const safeAreaBottom = window.safeAreaInsets?.bottom || 0;
+                
+                this.canvas.style.width = '100vw';
+                this.canvas.style.height = '100vh';
+            }
+
+            initializeDrops() {
+                this.drops = [];
+                const columns = Math.floor(this.canvas.width / this.settings.charSize);
+                
+                for (let i = 0; i < columns; i++) {
+                    this.drops[i] = {
+                        x: i * this.settings.charSize,
+                        y: Math.random() * this.canvas.height,
+                        speed: Math.random() * this.settings.speed + 1,
+                        char: this.getRandomChar(),
+                        opacity: Math.random()
+                    };
+                }
+            }
+
+            getRandomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+
+            draw() {
+                if (this.isPaused) return;
+
+                // Create fading effect
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                this.ctx.font = `${this.settings.charSize}px 'Courier New', monospace`;
+                this.ctx.fillStyle = this.settings.color;
+
+                for (let i = 0; i < this.drops.length; i++) {
+                    const drop = this.drops[i];
+                    
+                    // Add glitch effect
+                    if (this.settings.glitch && Math.random() < 0.01) {
+                        drop.char = this.getRandomChar();
+                    }
+                    
+                    // Draw character
+                    this.ctx.globalAlpha = drop.opacity;
+                    this.ctx.fillText(drop.char, drop.x, drop.y);
+                    
+                    // Update position
+                    drop.y += drop.speed;
+                    
+                    // Reset drop when it reaches bottom
+                    if (drop.y > this.canvas.height) {
+                        drop.y = -this.settings.charSize;
+                        drop.char = this.getRandomChar();
+                        drop.opacity = Math.random();
+                    }
+                    
+                    // Fade effect
+                    drop.opacity -= 0.01 * (this.settings.fadeSpeed / 10);
+                    if (drop.opacity <= 0) {
+                        drop.opacity = Math.random();
+                    }
+                }
+                
+                this.ctx.globalAlpha = 1;
+            }
+
+            animate() {
+                this.draw();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+
+            start() {
+                if (!this.animationId) {
+                    this.animate();
+                }
+            }
+
+            pause() {
+                this.isPaused = !this.isPaused;
+                const btn = document.getElementById('pause-btn');
+                btn.textContent = this.isPaused ? '▶️ Resume' : '⏸️ Pause';
+                btn.classList.toggle('active', this.isPaused);
+            }
+
+            updateSettings() {
+                this.settings.speed = parseInt(document.getElementById('speed-slider').value);
+                this.settings.density = parseInt(document.getElementById('density-slider').value);
+                this.settings.charSize = parseInt(document.getElementById('size-slider').value);
+                this.settings.color = document.getElementById('color-picker').value;
+                this.settings.fadeSpeed = parseInt(document.getElementById('fade-slider').value);
+                this.settings.glitch = document.getElementById('glitch-checkbox').checked;
+                
+                // Update display values
+                document.getElementById('speed-value').textContent = this.settings.speed;
+                document.getElementById('density-value').textContent = this.settings.density;
+                document.getElementById('size-value').textContent = this.settings.charSize;
+                document.getElementById('fade-value').textContent = this.settings.fadeSpeed;
+                
+                // Reinitialize drops with new settings
+                this.initializeDrops();
+            }
+
+            setupEventListeners() {
+                // Pause/Resume
+                document.getElementById('pause-btn').addEventListener('click', () => this.pause());
+                
+                // Settings toggle
+                document.getElementById('settings-btn').addEventListener('click', () => {
+                    const panel = document.getElementById('settings-panel');
+                    panel.classList.toggle('show');
+                });
+                
+                // Fullscreen toggle
+                document.getElementById('fullscreen-btn').addEventListener('click', () => {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log('Fullscreen not supported');
+                        });
+                    } else {
+                        document.exitFullscreen();
+                    }
+                });
+                
+                // Settings sliders
+                const sliders = ['speed-slider', 'density-slider', 'size-slider', 'fade-slider'];
+                sliders.forEach(id => {
+                    document.getElementById(id).addEventListener('input', () => this.updateSettings());
+                });
+                
+                // Color picker
+                document.getElementById('color-picker').addEventListener('change', () => this.updateSettings());
+                
+                // Glitch checkbox
+                document.getElementById('glitch-checkbox').addEventListener('change', () => this.updateSettings());
+                
+                // Window resize
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                    this.initializeDrops();
+                });
+                
+                // Orientation change
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.resizeCanvas();
+                        this.initializeDrops();
+                    }, 100);
+                });
+                
+                // Touch to wake
+                document.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    if (this.isPaused) {
+                        this.pause();
+                    }
+                });
+                
+                // Prevent context menu
+                document.addEventListener('contextmenu', (e) => e.preventDefault());
+                
+                // Prevent scrolling
+                document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            }
+        }
+
+        // Initialize screensaver when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new MatrixScreensaver();
+            
+            // Register service worker for PWA functionality
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('Matrix Screensaver SW: Registered successfully');
+                    })
+                    .catch((error) => {
+                        console.log('Matrix Screensaver SW: Registration failed', error);
+                    });
+            }
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
