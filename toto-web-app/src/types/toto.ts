@@ -23,6 +23,7 @@ export interface PredictionResult {
   numbers: number[];
   confidence: number;
   method: string;
+  description: string;
   reasoning: string;
 }
 
@@ -42,5 +43,18 @@ export interface StatisticalSummary {
   mostFrequentNumbers: NumberFrequency[];
   leastFrequentNumbers: NumberFrequency[];
   positionAnalysis: PositionAnalysis[];
-  overallFrequency: NumberFrequency[];
+}
+
+export interface ChartData {
+  frequencyChart: Array<{
+    number: number;
+    frequency: number;
+    percentage: number;
+  }>;
+  confidenceIntervals: Array<{
+    number: number;
+    percentage: number;
+    lower: number;
+    upper: number;
+  }>;
 } 
